@@ -3,5 +3,5 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub fn greet(name: &str) -> String {
-    format!("Hello, {}! from Rust+WASM", name)
+    format!("Hello, {}! from Rust+WASM ???sdfsdf?", name)
 }

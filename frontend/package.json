@@ -3,12 +3,15 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "pnpm run build:wasm:dev && ng serve",
+    "start:watch": "concurrently \"pnpm:watch:wasm\" \"ng serve\"",
     "build": "pnpm run build:wasm && ng build",
-    "build:dev": "pnpm run build:wasm && ng build --configuration development",
+    "build:dev": "pnpm run build:wasm:dev && ng build --configuration development",
     "build:wasm": "cd ../rust-wasm && wasm-pack build --target web --release && cd ../frontend",
     "build:wasm:dev": "cd ../rust-wasm && wasm-pack build --target web --dev && cd ../frontend",
-    "watch": "ng build --watch --configuration development"
+    "watch:wasm": "chokidar \"../rust-wasm/src/**/*.rs\" -c \"pnpm build:wasm:dev\"",
+    "watch:angular": "ng build --watch --configuration development",
+    "watch": "concurrently \"pnpm:watch:angular\" \"pnpm:watch:wasm\""
   },
   "prettier": {
     "printWidth": 100,
@@ -40,6 +43,8 @@
     "@angular/cli": "^20.1.6",
     "@angular/compiler-cli": "^20.1.0",
     "@types/jasmine": "~5.1.0",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.2.1",
     "jasmine-core": "~5.8.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
