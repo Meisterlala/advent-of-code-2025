@@ -3,8 +3,8 @@
 [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/meisterlala/advent-of-code-2023/main)](https://github.com/Meisterlala/advent-of-code-2025/commits/main/)
 
 You can view my solution online!
-
-Simply open [my Website](https://adventofcode2025.meisterlala.dev) or open the [GitHub Pages version](https://meisterlala.github.io/advent-of-code-2025/).
+- Simply open [my Website](https://adventofcode2025.meisterlala.dev) 
+- or open the [GitHub Pages version](https://meisterlala.github.io/advent-of-code-2025/)
 
 ## What is Advent of Code? 🎄
 
