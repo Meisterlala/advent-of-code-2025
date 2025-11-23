@@ -18,7 +18,7 @@ export class App implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      await init('/advent_of_code_2025_bg.wasm');
+      await init('advent_of_code_2025_bg.wasm');
       await this.loadDays();
       this.loading.set(false);
     } catch (error) {
