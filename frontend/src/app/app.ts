@@ -18,7 +18,7 @@ export class App implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      await init('/rust_wasm_bg.wasm');
+      await init('/advent_of_code_2025_bg.wasm');
       await this.loadDays();
       this.loading.set(false);
     } catch (error) {
@@ -54,16 +54,16 @@ export class App implements OnInit {
     }
 
     // Debug
-    // for (let i = 0; i < 10; i++) {
-    //   loadedDays.push({
-    //     dayNumber: i + 1,
-    //     description: `Description for Day ${i + 1}`,
-    //     part1: (input: string) =>
-    //       `Result of Part 1 for Day ${i + 1} with input length ${input.length}`,
-    //     part2: (input: string) =>
-    //       `Result of Part 2 for Day ${i + 1} with input length ${input.length}`,
-    //   });
-    // }
+    for (let i = 0; i < 10; i++) {
+      loadedDays.push({
+        dayNumber: i + 1,
+        description: `Description for Day ${i + 1}`,
+        part1: (input: string) =>
+          `Result of Part 1 for Day ${i + 1} with input length ${input.length}`,
+        part2: (input: string) =>
+          `Result of Part 2 for Day ${i + 1} with input length ${input.length}`,
+      });
+    }
 
     // Sanity check
     if (loadedDays.length === 0) {
