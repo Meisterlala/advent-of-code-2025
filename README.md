@@ -1,4 +1,5 @@
-# Advent of Code 2025 <img src="./.github/christmas_ferris.png" align="right" height="200"> <img src="./.github/angular_gradient.png" align="right" height="200">
+# Advent of Code 2025 
+<img src="./.github/christmas_ferris.png" align="right" height="190"> <img src="./.github/angular_gradient.png" align="right" height="200">
 
 [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/meisterlala/advent-of-code-2023/main)](https://github.com/Meisterlala/advent-of-code-2025/commits/main/)
 
