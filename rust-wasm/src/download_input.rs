@@ -18,7 +18,7 @@ pub fn download_input(day: u32) -> Result<(), String> {
         .map_err(|_| "AOC_SESSION environment variable not set and not in '.env' file. You get this by signing in on https://adventofcode.com")?;
 
     // Download input
-    let url = format!("https://adventofcode.com/2024/day/{day}/input");
+    let url = format!("https://adventofcode.com/2025/day/{day}/input");
     let mut response = reqwest::blocking::Client::new()
         .get(url)
         .header("Cookie", format!("session={}", cookie))
