@@ -1,1 +1,57 @@
-<p>day works!</p>
+<div class="day-container">
+  <div class="day-header">
+    <div class="header-title">
+      <h3>Day {{ dayNumber }}</h3>
+      <a
+        [href]="'https://adventofcode.com/2025/day/' + dayNumber"
+        target="_blank"
+        class="aoc-link"
+        (click)="$event.stopPropagation()"
+      >
+        [Link]
+      </a>
+    </div>
+    <div class="header-controls" (click)="toggle()">
+      <span class="toggle-text">{{ expanded() ? 'Close' : 'Solve' }}</span>
+      <span class="toggle-icon">{{ expanded() ? '▼' : '▶' }}</span>
+    </div>
+  </div>
+
+  @if (!expanded()) {
+  <div class="day-summary" (click)="toggle()">
+    <p>{{ description }}</p>
+  </div>
+  } @if (expanded()) {
+  <div class="day-content">
+  <div class="day-summary">
+    <p>{{ description }}</p>
+  </div>
+    <div class="io-section input-section">
+      <label>Puzzle Input</label>
+      <textarea
+        [ngModel]="inputData()"
+        (ngModelChange)="inputData.set($event)"
+        placeholder="Paste your puzzle input here. You can get it from the Advent of Code website after logging in."
+        rows="6"
+      >
+      </textarea>
+    </div>
+
+    <div class="parts-container">
+      <div class="part-box">
+        <div class="part-header">
+          <h4>Part 1</h4>
+        </div>
+        <textarea readonly [value]="outputPart1()" placeholder="Part 1 Result" rows="4"> </textarea>
+      </div>
+
+      <div class="part-box">
+        <div class="part-header">
+          <h4>Part 2</h4>
+        </div>
+        <textarea readonly [value]="outputPart2()" placeholder="Part 2 Result" rows="4"> </textarea>
+      </div>
+    </div>
+  </div>
+  }
+</div>

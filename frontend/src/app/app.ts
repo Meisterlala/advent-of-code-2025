@@ -1,12 +1,12 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 
 import init, { greet } from 'rust_wasm';
 import { Information } from './information/information';
+import { Days } from './days/days';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Information],
+  imports: [Information, Days],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

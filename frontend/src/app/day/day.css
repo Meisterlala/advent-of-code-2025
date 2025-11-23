@@ -1,0 +1,132 @@
+:host {
+  display: block;
+}
+
+.day-container {
+  border: 1px solid #333340;
+  border-radius: 5px;
+  background-color: #1a1a2e;
+  color: #cccccc;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.day-container:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+  background-color: #bbbbbb33;
+}
+
+.day-header {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #22222275;
+  border-radius: 5px;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: #999999;
+}
+
+.header-controls:hover {
+  color: #ffffff;
+}
+
+.day-header h3 {
+  margin: 0;
+  color: #ffff66; /* AoC yellow/gold */
+  text-shadow: 0 0 2px #ffff66;
+}
+
+.aoc-link {
+  color: #009900;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+
+.aoc-link:hover {
+  color: #00ff00;
+  text-decoration: underline;
+}
+
+.day-summary {
+  padding: 15px 15px 15px 15px;
+  color: #888899;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+
+.day-summary p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.day-content {
+  padding: 15px;
+  border-top: 1px solid #333340;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.io-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.io-section label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.parts-container {
+  display: flex;
+  gap: 20px;
+}
+
+.part-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.part-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.part-header h4 {
+  margin: 0;
+  color: #cccccc;
+}
+
+textarea {
+  background-color: #10101a;
+  color: #cccccc;
+  border: 1px solid #555566;
+  padding: 10px;
+  font-size: small;
+  font-family: "Source Code Pro", monospace;
+  resize: vertical;
+  border-radius: 3px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #ffff66;
+}

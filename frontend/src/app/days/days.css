@@ -1,0 +1,9 @@
+.days-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+app-day.expanded {
+  grid-column: 1 / -1;
+}

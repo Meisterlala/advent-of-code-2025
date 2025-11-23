@@ -1,0 +1,15 @@
+.info-box {
+  background-color: #0f0f23; /* AoC dark blue background */
+  color: #cccccc;
+  border: 1px solid #333340;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.info-box h2 {
+  color: #00cc00; /* AoC green */
+  margin-top: 0;
+  text-shadow: 0 0 2px #00cc00;
+}
