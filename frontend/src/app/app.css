@@ -3,3 +3,37 @@
   margin: 0 auto;
   padding: 20px;
 }
+
+.loading-container, .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+  color: #cccccc;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #333340;
+  border-top: 5px solid #ffff66; /* AoC yellow */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-container h2 {
+  color: #ff000080;
+  text-shadow: 0 0 2px #ff000080;
+}
+
+.error-container p {
+  color: #ff4a4abd;
+}

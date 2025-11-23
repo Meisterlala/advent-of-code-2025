@@ -1,4 +1,16 @@
 <div class="main-container">
   <app-information />
+  @if (loading()) {
+  <div class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading Rust WebAssembly module, containing the solutions</p>
+  </div>
+  } @else if (error()) {
+  <div class="error-container">
+    <h2>Error Loading WebAssembly Module</h2>
+    <p>{{ error() }}</p>
+  </div>
+  } @else {
   <app-days [days]="days()" />
+  }
 </div>
