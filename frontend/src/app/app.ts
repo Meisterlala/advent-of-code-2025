@@ -2,10 +2,11 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import init, { greet } from 'rust_wasm';
+import { Information } from './information/information';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, Information],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
