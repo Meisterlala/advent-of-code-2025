@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Day } from '../day/day';
+import { DayConfig } from '../models/day-config';
 
 @Component({
   selector: 'app-days',
@@ -9,5 +10,5 @@ import { Day } from '../day/day';
   styleUrl: './days.css',
 })
 export class Days {
-  days = Array.from({ length: 25 }, (_, i) => i + 1);
+  @Input() days: DayConfig[] = [];
 }

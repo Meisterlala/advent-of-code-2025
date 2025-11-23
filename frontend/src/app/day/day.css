@@ -62,7 +62,7 @@
 
 .day-summary {
   padding: 15px 15px 15px 15px;
-  color: #888899;
+  color: #cccccc;
   font-size: 0.9em;
   cursor: pointer;
 }
@@ -73,13 +73,15 @@
 }
 
 .day-content {
-  padding: 15px;
+  padding: 0px 15px 15px 15px;
   border-top: 1px solid #333340;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
 }
 
 .io-section {
+  margin-top: 20px;
+  color: #888899;
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
@@ -102,6 +104,7 @@
 }
 
 .part-header {
+  color: #888899;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -110,7 +113,6 @@
 
 .part-header h4 {
   margin: 0;
-  color: #cccccc;
 }
 
 textarea {

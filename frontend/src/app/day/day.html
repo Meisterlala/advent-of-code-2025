@@ -1,9 +1,9 @@
 <div class="day-container">
   <div class="day-header">
     <div class="header-title">
-      <h3>Day {{ dayNumber }}</h3>
+      <h3>Day {{ dayNumber() }}</h3>
       <a
-        [href]="'https://adventofcode.com/2025/day/' + dayNumber"
+        [href]="'https://adventofcode.com/2025/day/' + dayNumber()"
         target="_blank"
         class="aoc-link"
         (click)="$event.stopPropagation()"
@@ -19,13 +19,13 @@
 
   @if (!expanded()) {
   <div class="day-summary" (click)="toggle()">
-    <p>{{ description }}</p>
+    <p>{{ description() }}</p>
   </div>
   } @if (expanded()) {
   <div class="day-content">
-  <div class="day-summary">
-    <p>{{ description }}</p>
-  </div>
+    <div class="day-summary">
+      <p>{{ description() }}</p>
+    </div>
     <div class="io-section input-section">
       <label>Puzzle Input</label>
       <textarea
@@ -38,19 +38,22 @@
     </div>
 
     <div class="parts-container">
+      @if (config.part1) {
       <div class="part-box">
         <div class="part-header">
           <h4>Part 1</h4>
         </div>
-        <textarea readonly [value]="outputPart1()" placeholder="Part 1 Result" rows="4"> </textarea>
+        <textarea readonly [value]="outputPart1()" placeholder="Result will be automatically calculated and displayed here." rows="4"> </textarea>
       </div>
-
+      } @if (config.part2) {
       <div class="part-box">
         <div class="part-header">
           <h4>Part 2</h4>
         </div>
-        <textarea readonly [value]="outputPart2()" placeholder="Part 2 Result" rows="4"> </textarea>
+        <textarea readonly [value]="outputPart2()" placeholder="Result will be automatically calculated and displayed here." rows="4">
+        </textarea>
       </div>
+      }
     </div>
   </div>
   }

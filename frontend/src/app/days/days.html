@@ -1,5 +1,5 @@
 <div class="days-list">
-  @for (day of days; track day) {
-  <app-day [dayNumber]="day"></app-day>
+  @for (day of days; track day.dayNumber) {
+  <app-day [config]="day"></app-day>
   }
 </div>
