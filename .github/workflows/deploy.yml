@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Interactive Website
 
 on:
   push:
@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, ubuntu-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -36,7 +36,7 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with: 
+        with:
           version: "10.22.0"
           package_json_file: frontend/package.json
 

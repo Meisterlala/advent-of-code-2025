@@ -1,4 +1,4 @@
-name: Docker
+name: Docker Package
 
 on:
   push:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, ubuntu-latest]
     permissions:
       contents: read
       packages: write
