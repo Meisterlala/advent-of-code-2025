@@ -1,7 +1,9 @@
 # Advent of Code 2025 
-<img src="./.github/christmas_ferris.png" align="right" height="190"> <img src="./.github/angular_gradient.png" align="right" height="190">
+<img src="./.github/christmas_ferris.png" align="right" height="200"> <img src="./.github/angular_gradient.png" align="right" height="200">
 
-[![GitHub last commit (branch)](https://img.shields.io/github/last-commit/meisterlala/advent-of-code-2023/main)](https://github.com/Meisterlala/advent-of-code-2025/commits/main/)
+[![GitHub last commit (branch)](https://img.shields.io/github/last-commit/meisterlala/advent-of-code-2025/master)](https://github.com/Meisterlala/advent-of-code-2025/commits/master/)
+
+[![GitHub Pages](https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/deploy.yml/badge.svg)]([https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/deploy.yml](https://meisterlala.github.io/advent-of-code-2025/))[![Docker](https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/docker-publish.yml)
 
 You can view my solution online!
 - Simply open [my Website](https://adventofcode2025.meisterlala.dev) 
