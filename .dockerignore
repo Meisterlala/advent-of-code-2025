@@ -1,0 +1,9 @@
+node_modules
+target
+dist
+.git
+.angular
+.cache
+.ps1
+.md
+.env
