@@ -20,10 +20,10 @@ export class App implements OnInit {
     try {
       await init('advent_of_code_2025_bg.wasm');
       await this.loadDays();
-      this.loading.set(false);
     } catch (error) {
       console.error('Failed to initialize WebAssembly module.', error);
       this.error.set(error instanceof Error ? error.message : String(error));
+    } finally {
       this.loading.set(false);
     }
   }
@@ -35,33 +35,25 @@ export class App implements OnInit {
     // sleep to simulate delay
     // await new Promise(resolve => setTimeout(resolve, 4000));
 
-    for (let i = 1; i <= 25; i++) {
-      // Check for day{i}_part1, day{i}_part2, day{i}_desc
-      // Adjust naming convention as needed based on Rust exports
-      const part1Func = wasm[`day${i}_part1`];
-      const part2Func = wasm[`day${i}_part2`];
-      const descFunc = wasm[`day${i}_desc`];
-
-      // If at least one part exists, we consider the day "available"
-      if (part1Func || part2Func) {
-        loadedDays.push({
-          dayNumber: i,
-          description: descFunc ? descFunc() : undefined, // Let Day component handle default
-          part1: part1Func,
-          part2: part2Func,
-        });
+    // Check for required exports
+    const requiredExports = ['get_days'];
+    for (const exp of requiredExports) {
+      if (typeof wasm[exp] !== 'function') {
+        console.error(`Missing required export: ${exp}`);
+        throw new Error(`WASM module is missing required export: ${exp}`);
       }
     }
 
-    // Debug
-    for (let i = 0; i < 10; i++) {
+    // Load days
+    const days: wasmExports.Day[] = wasmExports.get_days();
+    for (const day of days) {
+      const part1 = typeof day.part1 === 'function' ? day.part1.bind(day) : undefined;
+      const part2 = typeof day.part2 === 'function' ? day.part2.bind(day) : undefined;
       loadedDays.push({
-        dayNumber: i + 1,
-        description: `Description for Day ${i + 1}`,
-        part1: (input: string) =>
-          `Result of Part 1 for Day ${i + 1} with input length ${input.length}`,
-        part2: (input: string) =>
-          `Result of Part 2 for Day ${i + 1} with input length ${input.length}`,
+        dayNumber: day.number,
+        description: day.desc,
+        part1,
+        part2,
       });
     }
 

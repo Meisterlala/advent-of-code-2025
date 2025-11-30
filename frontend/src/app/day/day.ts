@@ -1,4 +1,4 @@
-import { Component, Input, signal, computed } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DayConfig } from '../models/day-config';
@@ -20,15 +20,25 @@ export class Day {
   protected outputPart1 = signal('');
   protected outputPart2 = signal('');
 
-  protected dayNumber = computed(() => this.config.dayNumber);
-  protected description = computed(
-    () =>
-      this.config.description ||
+  protected dayNumber() {
+    return this.config?.dayNumber ?? 0;
+  }
+
+  protected description() {
+    return (
+      this.config?.description ||
       'This is a placeholder for the problem description and solution notes. You can describe the algorithm used, complexity, or any interesting tricks.'
-  );
+    );
+  }
 
   toggle() {
     this.expanded.update((v) => !v);
+  }
+
+  onInputChange(value: string) {
+    this.inputData.set(value);
+    this.runPart1();
+    this.runPart2();
   }
 
   runPart1() {
@@ -37,7 +47,7 @@ export class Day {
         const result = this.config.part1(this.inputData());
         this.outputPart1.set(String(result));
       } catch (e: any) {
-        this.outputPart1.set('Error: ' + e.toString());
+        this.outputPart1.set(e.toString());
       }
     } else {
       this.outputPart1.set('Part 1 not implemented yet.');
@@ -50,7 +60,7 @@ export class Day {
         const result = this.config.part2(this.inputData());
         this.outputPart2.set(String(result));
       } catch (e: any) {
-        this.outputPart2.set('Error: ' + e.toString());
+        this.outputPart2.set(e.toString());
       }
     } else {
       this.outputPart2.set('Part 2 not implemented yet.');

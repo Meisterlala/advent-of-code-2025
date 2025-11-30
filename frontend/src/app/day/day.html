@@ -30,7 +30,7 @@
       <label>Puzzle Input</label>
       <textarea
         [ngModel]="inputData()"
-        (ngModelChange)="inputData.set($event)"
+        (ngModelChange)="onInputChange($event)"
         placeholder="Paste your puzzle input here. You can get it from the Advent of Code website after logging in."
         rows="6"
       >
@@ -43,14 +43,25 @@
         <div class="part-header">
           <h4>Part 1</h4>
         </div>
-        <textarea readonly [value]="outputPart1()" placeholder="Result will be automatically calculated and displayed here." rows="4"> </textarea>
+        <textarea
+          readonly
+          [value]="outputPart1()"
+          placeholder="Result will be automatically calculated and displayed here."
+          rows="4"
+        >
+        </textarea>
       </div>
       } @if (config.part2) {
       <div class="part-box">
         <div class="part-header">
           <h4>Part 2</h4>
         </div>
-        <textarea readonly [value]="outputPart2()" placeholder="Result will be automatically calculated and displayed here." rows="4">
+        <textarea
+          readonly
+          [value]="outputPart2()"
+          placeholder="Result will be automatically calculated and displayed here."
+          rows="4"
+        >
         </textarea>
       </div>
       }
