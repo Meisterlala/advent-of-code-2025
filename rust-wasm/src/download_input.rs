@@ -1,5 +1,7 @@
 use std::{fs::OpenOptions, path::Path};
 
+use reqwest::blocking::Client;
+
 #[allow(dead_code)]
 pub fn check_if_present(day: u32) -> bool {
     Path::new(&format!("./inputs/day{:02}", day)).exists()
@@ -10,6 +12,7 @@ pub fn read_input(day: u32) -> Result<String, String> {
     std::fs::read_to_string(format!("./inputs/day{:02}", day)).map_err(|e| e.to_string())
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 #[allow(dead_code)]
 pub fn download_input(day: u32) -> Result<(), String> {
     // Load session cookie from .env file
@@ -19,7 +22,7 @@ pub fn download_input(day: u32) -> Result<(), String> {
 
     // Download input
     let url = format!("https://adventofcode.com/2025/day/{day}/input");
-    let mut response = reqwest::blocking::Client::new()
+    let mut response = Client::new()
         .get(url)
         .header("Cookie", format!("session={}", cookie))
         .send()

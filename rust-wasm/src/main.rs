@@ -1,7 +1,9 @@
 use advent_of_code_2025::{DAYS, Day};
 
+#[cfg(not(target_arch = "wasm32"))]
 mod download_input;
 
+#[cfg(not(target_arch = "wasm32"))]
 fn main() {
     println!("Running Advent of Code 2025...\n");
     println!("  Day  |  Part  | Solution");
@@ -20,7 +22,15 @@ fn main() {
 
     run_all();
 }
+#[cfg(target_arch = "wasm32")]
+fn main() {}
 
+#[cfg(target_arch = "wasm32")]
+fn _for_types(_: Day) {
+    _ = DAYS;
+}
+
+#[cfg(not(target_arch = "wasm32"))]
 fn run_day(day: &Day) {
     if !download_input::check_if_present(day.day) {
         println!("Day {:2} | Downloading Input ...", day.day);
@@ -47,6 +57,7 @@ fn run_day(day: &Day) {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn run_all() {
     for day in DAYS {
         run_day(day);
@@ -54,6 +65,7 @@ fn run_all() {
     }
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn parse_day(input: &str) -> Option<u32> {
     let only_numbers: String = input.chars().filter(|c| c.is_numeric()).collect();
     only_numbers.parse::<u32>().ok()
