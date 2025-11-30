@@ -30,3 +30,13 @@ body {
   background-color: #0f0f23;
   color: #cccccc;
 }
+
+a {
+  color: #00cc00;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  text-decoration: underline;
+}

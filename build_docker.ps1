@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 param (
     $registry = "registry.meisterlala.dev",
     $imageName = "advent-of-code-2025",
@@ -19,10 +20,6 @@ if ($tag)
         $tagParams += "-t", "$registry/${imageName}:$gitCommit"
     }
 }
-
-
-# Set up builder
-docker buildx create --use --driver docker-container
 
 # Build and push multi-arch image
 docker buildx build --platform $arch @tagParams --push .
