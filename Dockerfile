@@ -1,5 +1,8 @@
 # Stage 1: Build Rust WASM
-FROM rust:1.91-slim AS rust-builder
+FROM rust:1.91 AS rust-builder
+
+WORKDIR /app/rust-wasm
+COPY rust-wasm .
 
 # Install wasm-pack
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
@@ -7,8 +10,10 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 
 RUN rustup target add wasm32-unknown-unknown
 
-WORKDIR /app/rust-wasm
-COPY rust-wasm .
+# Install wasm-bindgen-cli
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    cargo install wasm-bindgen-cli@0.2.105
+
 
 # Build rust
 RUN --mount=type=cache,target=/app/rust-wasm/target \

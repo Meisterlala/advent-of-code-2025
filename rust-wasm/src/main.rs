@@ -34,11 +34,11 @@ fn _for_types(_: Day) {
 fn run_day(day: &Day) {
     if !download_input::check_if_present(day.day) {
         println!("Day {:2} | Downloading Input ...", day.day);
-        if let Err(e) = download_input::download_input(day.day) {
-            let err = format!("Day {:2} | Failed to download input", day.day);
-            println!("{err}: {e}");
-            return;
-        }
+        // if let Err(e) = download_input::download_input(day.day) {
+        //     let err = format!("Day {:2} | Failed to download input", day.day);
+        //     println!("{err}: {e}");
+        //     return;
+        // }
     }
 
     let input = match download_input::read_input(day.day) {
