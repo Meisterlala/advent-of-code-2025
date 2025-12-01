@@ -3,7 +3,8 @@
 
 [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/meisterlala/advent-of-code-2025/master)](https://github.com/Meisterlala/advent-of-code-2025/commits/master/)
 
-[![GitHub Pages](https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/deploy.yml/badge.svg)]([https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/deploy.yml](https://meisterlala.github.io/advent-of-code-2025/))[![Docker](https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/docker-publish.yml)
+[![GitHub Pages](https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/deploy.yml/badge.svg)](https://meisterlala.github.io/advent-of-code-2025)
+[![Docker](https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/Meisterlala/advent-of-code-2025/pkgs/container/advent-of-code-2025)
 
 You can view my solution online!
 - Simply open [my Website](https://adventofcode2025.meisterlala.dev) 
