@@ -1,4 +1,4 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, Signal, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DayConfig } from '../models/day-config';
@@ -43,12 +43,7 @@ export class Day {
 
   runPart1() {
     if (this.config.part1) {
-      try {
-        const result = this.config.part1(this.inputData());
-        this.outputPart1.set(String(result));
-      } catch (e: any) {
-        this.outputPart1.set(e.toString());
-      }
+      this.run(this.config.part1, this.outputPart1);
     } else {
       this.outputPart1.set('Part 1 not implemented yet.');
     }
@@ -56,14 +51,25 @@ export class Day {
 
   runPart2() {
     if (this.config.part2) {
-      try {
-        const result = this.config.part2(this.inputData());
-        this.outputPart2.set(String(result));
-      } catch (e: any) {
-        this.outputPart2.set(e.toString());
-      }
+      this.run(this.config.part2, this.outputPart2);
     } else {
       this.outputPart2.set('Part 2 not implemented yet.');
+    }
+  }
+
+  run(part: (input: string) => any, output: WritableSignal<string>) {
+    try {
+      const result = part(this.inputData());
+      output.set(String(result));
+    } catch (e: any) {
+      if (e instanceof Error) {
+        if (e.name == 'RuntimeError') {
+          output.set('An error occurred during executing, please check your input data.');
+          return;
+        }
+        output.set(e.toString());
+      }
+      this.outputPart2.set('An unknown error occurred.');
     }
   }
 }
