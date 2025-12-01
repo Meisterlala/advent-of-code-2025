@@ -1,4 +1,4 @@
-import { Component, Input, Signal, signal, WritableSignal } from '@angular/core';
+import { Component, Input, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DayConfig } from '../models/day-config';
@@ -29,6 +29,10 @@ export class Day {
       this.config?.description ||
       'This is a placeholder for the problem description and solution notes. You can describe the algorithm used, complexity, or any interesting tricks.'
     );
+  }
+
+  protected title() {
+    return `Day ${this.dayNumber()}: ${this.config.title}`;
   }
 
   toggle() {

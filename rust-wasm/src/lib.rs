@@ -13,6 +13,8 @@ pub static DAYS: &[&Day] = &[&day_01::SOLUTION];
 pub struct Day {
     pub day: u32,
     #[wasm_bindgen(skip)]
+    pub title_fn: fn() -> String,
+    #[wasm_bindgen(skip)]
     pub description: fn() -> String,
     #[wasm_bindgen(skip)]
     pub part1: Option<fn(&str) -> String>,
@@ -42,6 +44,11 @@ impl Day {
     }
 
     #[wasm_bindgen(getter)]
+    pub fn title(&self) -> String {
+        (self.title_fn)()
+    }
+
+    #[wasm_bindgen(getter)]
     pub fn number(&self) -> u32 {
         self.day
     }
@@ -63,28 +70,30 @@ pub fn get_day_description(day: u32) -> Option<String> {
 }
 
 #[doc(hidden)]
-pub fn __solution_to_string<T: std::fmt::Display>(value: T) -> String {
+pub fn __to_string<T: std::fmt::Display>(value: T) -> String {
     // Converts any Display output into the string the WASM interface expects.
     value.to_string()
 }
 
 #[macro_export]
 macro_rules! solution {
-    ($day:expr,$description:expr, $part1:expr $(,)?) => {
+    ($day:expr, $title:expr, $description:expr, $part1:expr) => {
         pub static SOLUTION: $crate::Day = $crate::Day {
             day: $day,
-            description: || -> String { $crate::__solution_to_string($description) },
-            part1: Some(|input| -> String { $crate::__solution_to_string($part1(input)) }),
+            title_fn: || -> String { $crate::__to_string($title) },
+            description: || -> String { $crate::__to_string($description) },
+            part1: Some(|input| -> String { $crate::__to_string($part1(input)) }),
             part2: None,
         };
     };
 
-    ($day:expr,$description:expr, $part1:expr, $part2:expr $(,)?) => {
+    ($day:expr, $title:expr, $description:expr, $part1:expr, $part2:expr) => {
         pub static SOLUTION: $crate::Day = $crate::Day {
             day: $day,
-            description: || -> String { $crate::__solution_to_string($description) },
-            part1: Some(|input| -> String { $crate::__solution_to_string($part1(input)) }),
-            part2: Some(|input| -> String { $crate::__solution_to_string($part2(input)) }),
+            title_fn: || -> String { $crate::__to_string($title) },
+            description: || -> String { $crate::__to_string($description) },
+            part1: Some(|input| -> String { $crate::__to_string($part1(input)) }),
+            part2: Some(|input| -> String { $crate::__to_string($part2(input)) }),
         };
     };
 }

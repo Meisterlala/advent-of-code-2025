@@ -1,4 +1,4 @@
-crate::solution!(1, "Secret Entrance", solve_a, solve_b);
+crate::solution!(1, "Secret Entrance", "test", solve_a, solve_b);
 
 use nom::{
     IResult, Parser,

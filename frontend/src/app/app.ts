@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 
-import init, * as wasmExports from 'rust_wasm';
+import init, * as wasmExports from 'advent-of-code-2025';
 import { Information } from './information/information';
 import { Days } from './days/days';
 import { DayConfig } from './models/day-config';
@@ -52,6 +52,7 @@ export class App implements OnInit {
       loadedDays.push({
         dayNumber: day.number,
         description: day.desc,
+        title: day.title,
         part1,
         part2,
       });
