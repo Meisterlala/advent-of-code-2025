@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, Input, OnInit, signal, WritableSignal, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DayConfig } from '../models/day-config';
@@ -28,6 +28,16 @@ export class Day implements OnInit {
   private part1State: PartState = { running: false };
   private part2State: PartState = { running: false };
 
+  constructor() {
+    effect(() => {
+      this.inputData();
+      untracked(() => {
+        void this.runPart1();
+        void this.runPart2();
+      });
+    });
+  }
+
   ngOnInit(): void {
     this.inputData.set(this.config.example || '');
   }
@@ -49,15 +59,13 @@ export class Day implements OnInit {
 
   toggle() {
     this.expanded.update((v) => !v);
-    if (this.expanded()) {
+    if (this.expanded() && !this.inputData()) {
       this.inputData.set(this.config.example || '');
     }
   }
 
   onInputChange(value: string) {
     this.inputData.set(value);
-    void this.runPart1();
-    void this.runPart2();
   }
 
   async runPart1(): Promise<void> {
@@ -113,7 +121,13 @@ export class Day implements OnInit {
   ): Promise<void> {
     const start = this.timestamp();
     try {
-      const result = await Promise.resolve(part(this.inputData()));
+      const input = this.inputData().trim();
+      if (!input) {
+        output.set('');
+        duration?.set(null);
+        return;
+      }
+      const result = await Promise.resolve(part(input));
       output.set(String(result));
       const end = this.timestamp();
       duration?.set(this.formatDuration(end - start));
@@ -121,7 +135,7 @@ export class Day implements OnInit {
       duration?.set(null);
       if (e instanceof Error) {
         if (e.name == 'RuntimeError') {
-          output.set('An error occurred during executing, please check your input data.');
+          output.set(`An error occurred during execution, please check your input data.`);
           return;
         }
         output.set(e.toString());
