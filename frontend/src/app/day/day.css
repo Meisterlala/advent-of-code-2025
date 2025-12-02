@@ -153,6 +153,8 @@ textarea:focus {
   display: inline-block;
   font-size: large;
   transition: transform 0.2s;
+  padding-right: 6px;
+  translate: 0 -2px;
 }
 
 .stars:hover {
