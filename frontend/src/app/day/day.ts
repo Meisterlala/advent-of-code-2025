@@ -23,7 +23,6 @@ export class Day implements OnInit {
   protected aocUrl!: SafeResourceUrl;
 
   ngOnInit(): void {
-    this.inputData.set(this.config.example || '');
     this.aocUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
       `https://adventofcode.com/2025/day/${this.dayNumber()}`
     );

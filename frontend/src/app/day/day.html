@@ -2,12 +2,7 @@
   <div class="day-header">
     <div class="header-title">
       <h3>{{ title() }}</h3>
-      <a
-        [href]="aocUrl"
-        target="_blank"
-        class="aoc-link"
-        (click)="$event.stopPropagation()"
-      >
+      <a [href]="aocUrl" target="_blank" class="aoc-link" (click)="$event.stopPropagation()">
         [Link]
       </a>
       <a [href]="sourceUrl" target="_blank" class="aoc-link" (click)="$event.stopPropagation()">
@@ -32,35 +27,35 @@
       </p>
     </div>
 
-    @if (expanded()) {
-    <div class="iframe-container">
-      <div class="iframe-wrapper">
-        <div class="iframe-header-text">
-          You can read the full puzzle description
-          <a [href]="aocUrl" target="_blank" class="aoc-link">here</a>
+    <div [hidden]="!expanded()">
+      <div class="iframe-container">
+        <div class="iframe-wrapper">
+          <div class="iframe-header-text">
+            You can read the full puzzle description
+            <a [href]="aocUrl" target="_blank" class="aoc-link">here</a>
+          </div>
+          <iframe [src]="aocUrl" loading="lazy"></iframe>
         </div>
-        <iframe [src]="aocUrl"></iframe>
+      </div>
+
+      <div class="io-section input-section">
+        <label>Puzzle Input</label>
+        <textarea
+          [ngModel]="inputData()"
+          (ngModelChange)="onInputChange($event)"
+          placeholder="Paste your puzzle input here. You can get it from the Advent of Code website after logging in."
+          rows="6"
+        >
+        </textarea>
+      </div>
+
+      <div class="parts-container">
+        @if (config.part1) {
+        <app-part [dayNumber]="dayNumber()" [part]="'part1'" [puzzleInput]="inputData()"></app-part>
+        } @if (config.part2) {
+        <app-part [dayNumber]="dayNumber()" [part]="'part2'" [puzzleInput]="inputData()"></app-part>
+        }
       </div>
     </div>
-
-    <div class="io-section input-section">
-      <label>Puzzle Input</label>
-      <textarea
-        [ngModel]="inputData()"
-        (ngModelChange)="onInputChange($event)"
-        placeholder="Paste your puzzle input here. You can get it from the Advent of Code website after logging in."
-        rows="6"
-      >
-      </textarea>
-    </div>
-
-    <div class="parts-container">
-      @if (config.part1) {
-      <app-part [dayNumber]="dayNumber()" [part]="'part1'" [puzzleInput]="inputData()"></app-part>
-      } @if (config.part2) {
-      <app-part [dayNumber]="dayNumber()" [part]="'part2'" [puzzleInput]="inputData()"></app-part>
-      }
-    </div>
-    }
   </div>
 </div>

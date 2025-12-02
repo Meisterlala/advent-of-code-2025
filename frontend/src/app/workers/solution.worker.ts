@@ -55,6 +55,7 @@ function solveDay(
     day.free();
   }
   const end = performance.now();
+  console.debug(`[Worker] Solved Day ${dayNumber} ${part} in ${end - start} ms`);
 
   return { result, duration: end - start };
 }

@@ -57,6 +57,7 @@ export class Part implements OnDestroy, OnInit {
   private async run(input: string): Promise<void> {
     const trimmedInput = input.trim();
 
+    // If input is empty, clear output and return
     if (!trimmedInput) {
       this.output.set('');
       this.duration.set(null);
