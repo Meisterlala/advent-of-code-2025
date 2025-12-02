@@ -152,22 +152,22 @@ textarea:focus {
 .stars {
   display: inline-block;
   font-size: large;
-  transition: transform 0.2s;
   padding-right: 6px;
   translate: 0 -2px;
 }
 
-.stars:hover {
-  animation: shine 1s infinite alternate;
-  transform: scale(1.2);
+/* Only animate while hovering */
+.day-container:hover .stars {
+  animation: idle-shine 3s ease-in-out infinite;
 }
 
-@keyframes shine {
-  0% {
-    text-shadow: 0 0 0px #ffff66;
+@keyframes idle-shine {
+  0%, 100% {
+    text-shadow: 0 0 2px #ffff66;
+    transform: scale(1.0);
   }
-  100% {
-    text-shadow: 0 0 10px #ffff66, 0 0 20px #ffaa00;
+  50% {
+    text-shadow: 0 0 5px #ffff66;
+    transform: scale(1.15);
   }
 }
-
