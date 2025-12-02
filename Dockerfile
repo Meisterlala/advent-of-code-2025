@@ -1,9 +1,6 @@
 # Stage 1: Build Rust WASM
 FROM rust:1.91 AS rust-builder
 
-WORKDIR /app/rust-wasm
-COPY rust-wasm .
-
 # Install wasm-pack
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     cargo install wasm-pack
@@ -14,14 +11,14 @@ RUN rustup target add wasm32-unknown-unknown
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     cargo install wasm-bindgen-cli@0.2.105
 
+WORKDIR /app/rust-wasm
+COPY rust-wasm .
 
 # Build rust
-RUN --mount=type=cache,target=/app/rust-wasm/target \
-    cargo build --target wasm32-unknown-unknown --release
+# RUN --mount=type=cache,target=/app/rust-wasm/target \
+#     cargo build --target wasm32-unknown-unknown --release
 
 # Build WASM
-# RUN --mount=type=cache,target=/app/rust-wasm/target \
-#     wasm-pack build --target web --release
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/app/rust-wasm/target \
     wasm-pack build --target web --release
