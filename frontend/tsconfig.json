@@ -15,7 +15,7 @@
     "target": "ES2022",
     "module": "preserve",
     "paths": {
-      "rust_wasm": ["../rust-wasm/pkg/*"]
+      "advent-of-code-2025": ["../rust-wasm/pkg/advent_of_code_2025"]
     }
   },
   "angularCompilerOptions": {
