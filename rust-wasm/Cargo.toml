@@ -2,6 +2,8 @@
 name = "advent-of-code-2025"
 version = "0.1.0"
 edition = "2024"
+authors = ["Meisterlala"]
+description = "Advent of Code 2025 solutions in Rust with WASM support"
 
 
 [dependencies]
@@ -28,3 +30,11 @@ bench = false
 crate-type = ["cdylib", "rlib"]
 path = "src/lib.rs"
 bench = false
+
+[profile.release]
+opt-level = 3
+
+[lints.clippy]
+perf = "warn"
+style = "warn"
+

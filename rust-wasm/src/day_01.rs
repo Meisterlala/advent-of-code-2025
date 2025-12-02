@@ -27,7 +27,7 @@ use nom::{
 
 pub fn solve_a(input: &str) -> u32 {
     let (rest, directions) = parse_a(input).expect("Failed to parse input");
-    assert!(rest.is_empty(), "Unparsed input remaining: {}", rest);
+    assert!(rest.is_empty(), "Unparsed input remaining: {rest}");
 
     let mut pos: i32 = 50;
     let mut times_at_zero = 0;
@@ -49,7 +49,7 @@ pub fn solve_a(input: &str) -> u32 {
 
 pub fn solve_b(input: &str) -> u32 {
     let (rest, directions) = parse_a(input).expect("Failed to parse input");
-    assert!(rest.is_empty(), "Unparsed input remaining: {}", rest);
+    assert!(rest.is_empty(), "Unparsed input remaining: {rest}");
 
     let mut pos: i32 = 50;
     let mut times_at_zero = 0;
@@ -68,10 +68,10 @@ pub fn solve_b(input: &str) -> u32 {
                 if (pos + dist as i32) >= 100 {
                     times_at_zero += ((pos + dist as i32) as f64 / 100.0).floor() as u32;
                 }
-                pos += dist as i32
+                pos += dist as i32;
             }
         }
-        pos = (pos + 10000000) % 100;
+        pos = (pos + 10_000_000) % 100;
     }
     times_at_zero
 }
