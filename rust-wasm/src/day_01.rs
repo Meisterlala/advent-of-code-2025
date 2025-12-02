@@ -2,9 +2,22 @@ crate::solution!(
     1,
     "Secret Entrance",
     "The amount of revolutions can be calculated without a full simulation",
+    &EXAMPLE,
     solve_a,
     solve_b
 );
+
+static EXAMPLE: &str = "L68
+L30
+R48
+L5
+R60
+L55
+L1
+L99
+R14
+L82
+";
 
 use nom::{
     IResult, Parser,
@@ -88,33 +101,21 @@ fn parse_a(input: &str) -> IResult<&str, Vec<Direction>> {
 mod tests {
     use super::*;
 
-    static INPUT: &str = "L68
-L30
-R48
-L5
-R60
-L55
-L1
-L99
-R14
-L82
-";
-
     #[test]
     fn test_parse_a() {
-        let (remaining, directions) = parse_a(INPUT).expect("Failed to parse directions");
+        let (remaining, directions) = parse_a(EXAMPLE).expect("Failed to parse directions");
         assert_eq!(remaining, "");
         assert_eq!(directions.len(), 10);
     }
 
     #[test]
     fn test_solve_a() {
-        assert_eq!(solve_a(INPUT), 3);
+        assert_eq!(solve_a(EXAMPLE), 3);
     }
 
     #[test]
     fn test_solve_b() {
-        assert_eq!(solve_b(INPUT), 6);
+        assert_eq!(solve_b(EXAMPLE), 6);
     }
 
     #[test]

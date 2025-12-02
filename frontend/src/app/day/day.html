@@ -18,56 +18,56 @@
   </div>
 
   @if (!expanded()) {
+  <div class="day-summary" (click)="toggle()">
+    <p>{{ description() }}</p>
+  </div>
+  } @if (expanded()) {
+  <div class="day-content">
     <div class="day-summary" (click)="toggle()">
       <p>{{ description() }}</p>
     </div>
-  }
-  @if (expanded()) {
-    <div class="day-content">
-      <div class="day-summary" (click)="toggle()">
-        <p>{{ description() }}</p>
-      </div>
-      <div class="io-section input-section">
-        <label>Puzzle Input</label>
+    <div class="io-section input-section">
+      <label>Puzzle Input</label>
+      <textarea
+        [ngModel]="inputData()"
+        (ngModelChange)="onInputChange($event)"
+        placeholder="Paste your puzzle input here. You can get it from the Advent of Code website after logging in."
+        rows="6"
+      >
+      </textarea>
+    </div>
+
+    <div class="parts-container">
+      @if (config.part1) {
+      <div class="part-box">
+        <div class="part-header">
+          <h4>Part 1</h4>
+          <span class="duration-indicator">{{ durationPart1() ?? '' }}</span>
+        </div>
         <textarea
-          [ngModel]="inputData()"
-          (ngModelChange)="onInputChange($event)"
-          placeholder="Paste your puzzle input here. You can get it from the Advent of Code website after logging in."
-          rows="6"
+          readonly
+          [value]="outputPart1()"
+          placeholder="Result will be automatically calculated and displayed here."
+          rows="4"
         >
         </textarea>
       </div>
-
-      <div class="parts-container">
-        @if (config.part1) {
-          <div class="part-box">
-            <div class="part-header">
-              <h4>Part 1</h4>
-            </div>
-            <textarea
-              readonly
-              [value]="outputPart1()"
-              placeholder="Result will be automatically calculated and displayed here."
-              rows="4"
-            >
-            </textarea>
-          </div>
-        }
-        @if (config.part2) {
-          <div class="part-box">
-            <div class="part-header">
-              <h4>Part 2</h4>
-            </div>
-            <textarea
-              readonly
-              [value]="outputPart2()"
-              placeholder="Result will be automatically calculated and displayed here."
-              rows="4"
-            >
-            </textarea>
-          </div>
-        }
+      } @if (config.part2) {
+      <div class="part-box">
+        <div class="part-header">
+          <h4>Part 2</h4>
+          <span class="duration-indicator">{{ durationPart2() ?? '--' }}</span>
+        </div>
+        <textarea
+          readonly
+          [value]="outputPart2()"
+          placeholder="Result will be automatically calculated and displayed here."
+          rows="4"
+        >
+        </textarea>
       </div>
+      }
     </div>
+  </div>
   }
 </div>

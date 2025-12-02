@@ -1,7 +1,11 @@
-import { Component, Input, signal, WritableSignal } from '@angular/core';
+import { Component, Input, OnInit, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DayConfig } from '../models/day-config';
+
+interface PartState {
+  running: boolean;
+}
 
 @Component({
   selector: 'app-day',
@@ -12,13 +16,21 @@ import { DayConfig } from '../models/day-config';
     '[class.expanded]': 'expanded()',
   },
 })
-export class Day {
+export class Day implements OnInit {
   @Input({ required: true }) config!: DayConfig;
 
   protected expanded = signal(false);
   protected inputData = signal('');
   protected outputPart1 = signal('');
   protected outputPart2 = signal('');
+  protected durationPart1 = signal<string | null>(null);
+  protected durationPart2 = signal<string | null>(null);
+  private part1State: PartState = { running: false };
+  private part2State: PartState = { running: false };
+
+  ngOnInit(): void {
+    this.inputData.set(this.config.example || '');
+  }
 
   protected dayNumber() {
     return this.config?.dayNumber ?? 0;
@@ -37,43 +49,100 @@ export class Day {
 
   toggle() {
     this.expanded.update((v) => !v);
+    if (this.expanded()) {
+      this.inputData.set(this.config.example || '');
+    }
   }
 
   onInputChange(value: string) {
     this.inputData.set(value);
-    this.runPart1();
-    this.runPart2();
+    void this.runPart1();
+    void this.runPart2();
   }
 
-  runPart1() {
+  async runPart1(): Promise<void> {
     if (this.config.part1) {
-      this.run(this.config.part1, this.outputPart1);
+      await this.executePart(
+        this.config.part1,
+        this.outputPart1,
+        this.durationPart1,
+        this.part1State
+      );
     } else {
       this.outputPart1.set('Part 1 not implemented yet.');
+      this.durationPart1.set(null);
     }
   }
 
-  runPart2() {
+  async runPart2(): Promise<void> {
     if (this.config.part2) {
-      this.run(this.config.part2, this.outputPart2);
+      await this.executePart(
+        this.config.part2,
+        this.outputPart2,
+        this.durationPart2,
+        this.part2State
+      );
     } else {
       this.outputPart2.set('Part 2 not implemented yet.');
+      this.durationPart2.set(null);
     }
   }
 
-  run(part: (input: string) => any, output: WritableSignal<string>) {
+  private async executePart(
+    part: (input: string) => any,
+    output: WritableSignal<string>,
+    duration: WritableSignal<string | null>,
+    state: PartState
+  ): Promise<void> {
+    if (state.running) {
+      return;
+    }
+
+    state.running = true;
     try {
-      const result = part(this.inputData());
+      await this.run(part, output, duration);
+    } finally {
+      state.running = false;
+    }
+  }
+
+  private async run(
+    part: (input: string) => any,
+    output: WritableSignal<string>,
+    duration?: WritableSignal<string | null>
+  ): Promise<void> {
+    const start = this.timestamp();
+    try {
+      const result = await Promise.resolve(part(this.inputData()));
       output.set(String(result));
+      const end = this.timestamp();
+      duration?.set(this.formatDuration(end - start));
     } catch (e: any) {
+      duration?.set(null);
       if (e instanceof Error) {
         if (e.name == 'RuntimeError') {
           output.set('An error occurred during executing, please check your input data.');
           return;
         }
         output.set(e.toString());
+        return;
       }
-      this.outputPart2.set('An unknown error occurred.');
+      output.set('An unknown error occurred.');
     }
+  }
+
+  private timestamp(): number {
+    return typeof performance !== 'undefined' ? performance.now() : Date.now();
+  }
+
+  private formatDuration(durationMs: number): string {
+    if (!isFinite(durationMs) || durationMs < 0) {
+      return '';
+    }
+    if (durationMs < 1) {
+      return `<1 ms`;
+    }
+    const rounded = Math.round(durationMs);
+    return `${rounded} ms`;
   }
 }

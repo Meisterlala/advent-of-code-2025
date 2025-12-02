@@ -2,9 +2,14 @@ crate::solution!(
     2,
     "Gift Shop",
     "For this i just iterate through the list of IDs and filter them",
+    &EXAMPLE,
     solve_a,
     solve_b
 );
+
+static EXAMPLE: &str = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,
+1698522-1698528,446443-446449,38593856-38593862,565653-565659,
+824824821-824824827,2121212118-2121212124";
 
 use std::ops::Range;
 
@@ -109,13 +114,9 @@ pub fn parse(input: &str) -> IResult<&str, Vec<Range<u64>>> {
 mod tests {
     use super::*;
 
-    static INPUT: &str = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,
-1698522-1698528,446443-446449,38593856-38593862,565653-565659,
-824824821-824824827,2121212118-2121212124";
-
     #[test]
     fn test_parse_a() {
-        let (remaining, parsed) = parse(INPUT).expect("Failed to parse directions");
+        let (remaining, parsed) = parse(EXAMPLE).expect("Failed to parse directions");
         assert_eq!(remaining, "");
         assert_eq!(
             parsed,
@@ -137,11 +138,11 @@ mod tests {
 
     #[test]
     fn test_solve_a() {
-        assert_eq!(solve_a(INPUT), 1227775554);
+        assert_eq!(solve_a(EXAMPLE), 1227775554);
     }
 
     #[test]
     fn test_solve_b() {
-        assert_eq!(solve_b(INPUT), 4174379265);
+        assert_eq!(solve_b(EXAMPLE), 4174379265);
     }
 }

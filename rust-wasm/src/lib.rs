@@ -2,11 +2,6 @@ pub mod day_01;
 pub mod day_02;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
-pub fn greet(name: &str) -> String {
-    format!("Hello, {}! from Rust+WASM ???sdfsdf?", name)
-}
-
 pub static DAYS: &[&Day] = &[&day_01::SOLUTION, &day_02::SOLUTION];
 
 #[wasm_bindgen]
@@ -17,6 +12,8 @@ pub struct Day {
     pub title_fn: fn() -> String,
     #[wasm_bindgen(skip)]
     pub description: fn() -> String,
+    #[wasm_bindgen(skip)]
+    pub example_fn: fn() -> String,
     #[wasm_bindgen(skip)]
     pub part1: Option<fn(&str) -> String>,
     #[wasm_bindgen(skip)]
@@ -50,6 +47,11 @@ impl Day {
     }
 
     #[wasm_bindgen(getter)]
+    pub fn example(&self) -> String {
+        (self.example_fn)()
+    }
+
+    #[wasm_bindgen(getter)]
     pub fn number(&self) -> u32 {
         self.day
     }
@@ -78,21 +80,23 @@ pub fn __to_string<T: std::fmt::Display>(value: T) -> String {
 
 #[macro_export]
 macro_rules! solution {
-    ($day:expr, $title:expr, $description:expr, $part1:expr) => {
+    ($day:expr, $title:expr, $description:expr, $example:expr, $part1:expr) => {
         pub static SOLUTION: $crate::Day = $crate::Day {
             day: $day,
             title_fn: || -> String { $crate::__to_string($title) },
             description: || -> String { $crate::__to_string($description) },
+            example_fn: || -> String { $crate::__to_string($example) },
             part1: Some(|input| -> String { $crate::__to_string($part1(input)) }),
             part2: None,
         };
     };
 
-    ($day:expr, $title:expr, $description:expr, $part1:expr, $part2:expr) => {
+    ($day:expr, $title:expr, $description:expr, $example:expr, $part1:expr, $part2:expr) => {
         pub static SOLUTION: $crate::Day = $crate::Day {
             day: $day,
             title_fn: || -> String { $crate::__to_string($title) },
             description: || -> String { $crate::__to_string($description) },
+            example_fn: || -> String { $crate::__to_string($example) },
             part1: Some(|input| -> String { $crate::__to_string($part1(input)) }),
             part2: Some(|input| -> String { $crate::__to_string($part2(input)) }),
         };

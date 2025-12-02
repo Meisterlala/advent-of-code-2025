@@ -53,11 +53,13 @@ export class App implements OnInit {
         dayNumber: day.number,
         description: day.desc,
         title: day.title,
+        example: day.example,
         part1,
         part2,
       });
     }
 
+    console.log(`Loaded from wasm:`, loadedDays);
     // Sanity check
     if (loadedDays.length === 0) {
       console.log('WASM exports:', Object.keys(wasm));

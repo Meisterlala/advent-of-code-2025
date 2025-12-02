@@ -115,6 +115,11 @@
   margin: 0;
 }
 
+.duration-indicator {
+  font-size: 0.85em;
+  color: #bbbbcc;
+}
+
 textarea {
   background-color: #10101a;
   color: #cccccc;
