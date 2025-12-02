@@ -1,4 +1,10 @@
-crate::solution!(1, "Secret Entrance", "test", solve_a, solve_b);
+crate::solution!(
+    1,
+    "Secret Entrance",
+    "The amount of revolutions can be calculated without a full simulation",
+    solve_a,
+    solve_b
+);
 
 use nom::{
     IResult, Parser,

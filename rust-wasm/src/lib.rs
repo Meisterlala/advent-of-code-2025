@@ -1,4 +1,5 @@
 pub mod day_01;
+pub mod day_02;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -6,7 +7,7 @@ pub fn greet(name: &str) -> String {
     format!("Hello, {}! from Rust+WASM ???sdfsdf?", name)
 }
 
-pub static DAYS: &[&Day] = &[&day_01::SOLUTION];
+pub static DAYS: &[&Day] = &[&day_01::SOLUTION, &day_02::SOLUTION];
 
 #[wasm_bindgen]
 #[derive(Clone, Copy)]
