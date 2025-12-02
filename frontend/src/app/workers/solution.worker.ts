@@ -29,7 +29,9 @@ addEventListener('message', async ({ data }: { data: WorkerRequest }) => {
         throw new Error(`Unknown action: ${(data as any).action}`);
     }
   } catch (error) {
-    postMessage({ error: error instanceof Error ? error.message : String(error) });
+    postMessage({
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
 });
 
@@ -51,11 +53,26 @@ function solveDay(
     } else {
       result = day.part2(input);
     }
-  } finally {
     day.free();
+  } catch (e) {
+    if (e instanceof Error) {
+      if (e.name === 'RuntimeError') {
+        throw new Error(
+          `The rust code encountered a panic. Please check your input data and try again.`
+        );
+      }
+      throw new Error(
+        `Error solving Day ${dayNumber} ${part == 'part1' ? 'Part 1' : 'Part 2'}: ${e.message}`
+      );
+    }
+    throw new Error(
+      `Unknown error solving Day ${dayNumber} ${part == 'part1' ? 'Part 1' : 'Part 2'}`
+    );
   }
   const end = performance.now();
-  console.debug(`[Worker] Solved Day ${dayNumber} ${part} in ${end - start} ms`);
+  console.debug(
+    `[Worker] Solved Day ${dayNumber} ${part == 'part1' ? 'Part 1' : 'Part 2'} in ${end - start} ms`
+  );
 
   return { result, duration: end - start };
 }
