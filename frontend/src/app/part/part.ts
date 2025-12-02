@@ -1,6 +1,7 @@
 import { Component, input, OnDestroy, OnInit, signal, effect, untracked } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SolveRequest, WorkerResponse } from '../workers/worker.types';
 
 @Component({
   selector: 'app-part',
@@ -74,68 +75,70 @@ export class Part implements OnDestroy, OnInit {
     }
 
     this.running.set(true);
-    const start = this.timestamp();
 
     try {
-      const resultPromise = new Promise<{ result: string; duration: number }>((resolve, reject) => {
-        if (!this.worker) return reject(new Error('Worker not initialized'));
-
-        this.worker.onmessage = ({ data }) => {
-          if (data.error) {
-            reject(new Error(data.error));
-          } else {
-            resolve(data);
-          }
-        };
-
-        this.worker.onerror = (err) => reject(err);
-
-        this.worker.postMessage({
-          action: 'solve',
-          dayNumber: this.dayNumber(),
-          part: this.part(),
-          input: trimmedInput,
-        });
-      });
-
-      const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => {
-          reject(new Error(`Calculation timed out after ${this.TIMEOUT_MS / 1000} seconds`));
-        }, this.TIMEOUT_MS)
-      );
-
-      const { result, duration } = await Promise.race([resultPromise, timeoutPromise]);
-
-      this.output.set(String(result));
+      const { result, duration } = await this.solveInWorker(trimmedInput);
+      this.output.set(result);
       this.duration.set(this.formatDuration(duration));
-      this.running.set(false);
     } catch (e: any) {
-      this.duration.set(null);
+      this.handleError(e);
+    } finally {
       this.running.set(false);
-
-      if (e.message && e.message.includes('Worker')) {
-        this.output.set('An error occurred in the worker thread.');
-        return;
-      }
-
-      if (e.message === `Calculation timed out after ${this.TIMEOUT_MS / 1000} seconds`) {
-        this.terminateWorker();
-      }
-
-      if (e instanceof Error) {
-        if (e.name === 'RuntimeError') {
-          this.output.set(`An error occurred during execution, please check your input data.`);
-          return;
-        }
-        this.output.set(e.toString());
-        return;
-      }
-      this.output.set('An unknown error occurred.');
     }
   }
 
-  private timestamp(): number {
-    return typeof performance !== 'undefined' ? performance.now() : Date.now();
+  private solveInWorker(input: string): Promise<{ result: string; duration: number }> {
+    return new Promise((resolve, reject) => {
+      if (!this.worker) return reject(new Error('Worker not initialized'));
+
+      const timeoutId = setTimeout(() => {
+        this.terminateWorker();
+        reject(new Error(`Calculation timed out after ${this.TIMEOUT_MS / 1000} seconds`));
+      }, this.TIMEOUT_MS);
+
+      this.worker.onmessage = ({ data }: { data: WorkerResponse }) => {
+        clearTimeout(timeoutId);
+        if ('error' in data) {
+          reject(new Error(data.error));
+        } else if ('result' in data && 'duration' in data) {
+          resolve(data as { result: string; duration: number });
+        } else {
+          reject(new Error('Unexpected response from worker'));
+        }
+      };
+
+      this.worker.onerror = (err) => {
+        clearTimeout(timeoutId);
+        reject(err);
+      };
+
+      const request: SolveRequest = {
+        action: 'solve',
+        dayNumber: this.dayNumber(),
+        part: this.part(),
+        input,
+      };
+      this.worker.postMessage(request);
+    });
+  }
+
+  private handleError(e: any) {
+    this.duration.set(null);
+
+    if (e.message && e.message.includes('Worker')) {
+      this.output.set('An error occurred in the worker thread.');
+      return;
+    }
+
+    if (e instanceof Error) {
+      if (e.name === 'RuntimeError') {
+        this.output.set(`An error occurred during execution, please check your input data.`);
+        return;
+      }
+      this.output.set(e.toString());
+      return;
+    }
+    this.output.set('An unknown error occurred.');
   }
 
   private formatDuration(durationMs: number): string {
