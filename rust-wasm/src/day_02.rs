@@ -1,7 +1,7 @@
 crate::solution!(
     2,
     "Gift Shop",
-    "For this i just iterate through the list of IDs and filter them",
+    "I iterate through the list of IDs and filter them. This is pretty straightforward but not very efficient, because it needs a lot of string comparisons.",
     &EXAMPLE,
     solve_a,
     solve_b

@@ -1,7 +1,7 @@
 crate::solution!(
     1,
     "Secret Entrance",
-    "The amount of revolutions can be calculated without a full simulation",
+    "I calculate the number of revolutions based on the modulo of the position, so no iteration is needed.",
     &EXAMPLE,
     solve_a,
     solve_b
