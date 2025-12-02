@@ -10,6 +10,9 @@
       >
         [Link]
       </a>
+      <a [href]="sourceUrl" target="_blank" class="aoc-link" (click)="$event.stopPropagation()">
+        [Source]
+      </a>
     </div>
     <div class="header-controls" (click)="toggle()">
       <span class="toggle-text">{{ expanded() ? 'Close' : 'Solve' }}</span>
@@ -17,15 +20,29 @@
     </div>
   </div>
 
-  @if (!expanded()) {
-  <div class="day-summary" (click)="toggle()">
-    <p>{{ description() }}</p>
-  </div>
-  } @if (expanded()) {
   <div class="day-content">
     <div class="day-summary" (click)="toggle()">
-      <p>{{ description() }}</p>
+      <p>
+        @if (this.isComplete) {
+        <span class="stars">⭐⭐</span>
+        } @else {
+        <span class="stars">⭐</span>
+        }
+        {{ description() }}
+      </p>
     </div>
+
+    @if (expanded()) {
+    <div class="iframe-container">
+      <div class="iframe-wrapper">
+        <div class="iframe-header-text">
+          You can read the full puzzle description
+          <a [href]="aocUrl" target="_blank" class="aoc-link">here</a>
+        </div>
+        <iframe [src]="aocUrl"></iframe>
+      </div>
+    </div>
+
     <div class="io-section input-section">
       <label>Puzzle Input</label>
       <textarea
@@ -44,6 +61,6 @@
       <app-part [dayNumber]="dayNumber()" [part]="'part2'" [puzzleInput]="inputData()"></app-part>
       }
     </div>
+    }
   </div>
-  }
 </div>
