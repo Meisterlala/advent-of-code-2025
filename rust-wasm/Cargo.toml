@@ -12,6 +12,13 @@ nom = "8.0.0"
 reqwest = { version = "0.11", features = ["blocking"] }
 dotenv = "0.15.0"
 
+[dev-dependencies]
+criterion = "0.8.0"
+
+[[bench]]
+name = "all_days"
+harness = false
+
 [[bin]]
 name = "advent-of-code-2025"
 path = "src/main.rs"

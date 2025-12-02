@@ -2,4 +2,4 @@ rust-wasm/target/
 rust-wasm/pkg/
 
 rust-wasm/.env
-rust-wasm/inputs
+rust-wasm/inputs/day*
