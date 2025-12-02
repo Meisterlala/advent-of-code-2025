@@ -1,4 +1,5 @@
-# Advent of Code 2025 
+# Advent of Code 2025
+
 <img src="./.github/christmas_ferris.png" align="right" height="200"> <img src="./.github/angular_gradient.png" align="right" height="200">
 
 [![GitHub last commit (branch)](https://img.shields.io/github/last-commit/meisterlala/advent-of-code-2025/master)](https://github.com/Meisterlala/advent-of-code-2025/commits/master/)
@@ -7,7 +8,8 @@
 [![Docker](https://github.com/Meisterlala/advent-of-code-2025/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/Meisterlala/advent-of-code-2025/pkgs/container/advent-of-code-2025)
 
 You can view my solution online!
-- Simply open [my Website](https://adventofcode2025.meisterlala.dev) 
+
+- Simply open [my Website](https://adventofcode2025.meisterlala.dev)
 - or open the [GitHub Pages version](https://meisterlala.github.io/advent-of-code-2025/)
 
 ## What is Advent of Code? 🎄
@@ -62,4 +64,6 @@ You can benchmark the performance of the code using the following commands:
 cd rust-wasm
 # Benchmark all the days
 cargo bench
+# Benchmark a specific day
+cargo bench day01
 ```
