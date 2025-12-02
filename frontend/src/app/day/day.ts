@@ -20,19 +20,17 @@ export class Day implements OnInit {
 
   protected expanded = signal(false);
   protected inputData = signal('');
+  protected aocUrl!: SafeResourceUrl;
 
   ngOnInit(): void {
     this.inputData.set(this.config.example || '');
+    this.aocUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://adventofcode.com/2025/day/${this.dayNumber()}`
+    );
   }
 
   protected dayNumber() {
     return this.config?.dayNumber ?? 0;
-  }
-
-  protected get aocUrl(): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://adventofcode.com/2025/day/${this.dayNumber()}`
-    );
   }
 
   protected get sourceUrl() {

@@ -28,6 +28,15 @@
   color: #bbbbcc;
 }
 
+.duration-indicator.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.duration-indicator.clickable:hover {
+  color: #ffffff;
+}
+
 textarea {
   background-color: #10101a;
   color: #cccccc;

@@ -151,4 +151,10 @@ export class Part implements OnDestroy, OnInit {
     const rounded = Math.round(durationMs);
     return `${rounded} ms`;
   }
+
+  protected recalculate() {
+    if (!this.running() && this.duration()) {
+      void this.run(this.puzzleInput());
+    }
+  }
 }

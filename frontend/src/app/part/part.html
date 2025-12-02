@@ -1,7 +1,12 @@
 <div class="part-box">
   <div class="part-header">
     <h4>{{ part() === 'part1' ? 'Part 1' : 'Part 2' }}</h4>
-    <span class="duration-indicator">
+    <span
+      class="duration-indicator"
+      [class.clickable]="!running() && duration()"
+      (click)="recalculate()"
+      [title]="!running() && duration() ? 'Click to re-run the solution' : ''"
+    >
       @if (running()) {
       <span class="spinner"></span>
       } @else {
