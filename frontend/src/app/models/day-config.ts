@@ -3,6 +3,6 @@ export interface DayConfig {
   title: string;
   description: string;
   example: string;
-  part1?: (input: string) => any;
-  part2?: (input: string) => any;
+  part1: boolean;
+  part2: boolean;
 }

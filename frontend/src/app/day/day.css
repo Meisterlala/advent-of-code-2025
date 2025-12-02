@@ -97,29 +97,6 @@
   gap: 20px;
 }
 
-.part-box {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.part-header {
-  color: #888899;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.part-header h4 {
-  margin: 0;
-}
-
-.duration-indicator {
-  font-size: 0.85em;
-  color: #bbbbcc;
-}
-
 textarea {
   background-color: #10101a;
   color: #cccccc;
@@ -137,3 +114,4 @@ textarea:focus {
   outline: none;
   border-color: #ffff66;
 }
+

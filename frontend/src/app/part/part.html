@@ -1,0 +1,19 @@
+<div class="part-box">
+  <div class="part-header">
+    <h4>{{ part() === 'part1' ? 'Part 1' : 'Part 2' }}</h4>
+    <span class="duration-indicator">
+      @if (running()) {
+      <span class="spinner"></span>
+      } @else {
+      {{ duration() ?? '' }}
+      }
+    </span>
+  </div>
+  <textarea
+    readonly
+    [value]="output()"
+    placeholder="Result will be automatically calculated and displayed here."
+    rows="4"
+  >
+  </textarea>
+</div>

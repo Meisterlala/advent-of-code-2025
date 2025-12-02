@@ -39,33 +39,9 @@
 
     <div class="parts-container">
       @if (config.part1) {
-      <div class="part-box">
-        <div class="part-header">
-          <h4>Part 1</h4>
-          <span class="duration-indicator">{{ durationPart1() ?? '' }}</span>
-        </div>
-        <textarea
-          readonly
-          [value]="outputPart1()"
-          placeholder="Result will be automatically calculated and displayed here."
-          rows="4"
-        >
-        </textarea>
-      </div>
+      <app-part [dayNumber]="dayNumber()" [part]="'part1'" [puzzleInput]="inputData()"></app-part>
       } @if (config.part2) {
-      <div class="part-box">
-        <div class="part-header">
-          <h4>Part 2</h4>
-          <span class="duration-indicator">{{ durationPart2() ?? '--' }}</span>
-        </div>
-        <textarea
-          readonly
-          [value]="outputPart2()"
-          placeholder="Result will be automatically calculated and displayed here."
-          rows="4"
-        >
-        </textarea>
-      </div>
+      <app-part [dayNumber]="dayNumber()" [part]="'part2'" [puzzleInput]="inputData()"></app-part>
       }
     </div>
   </div>
