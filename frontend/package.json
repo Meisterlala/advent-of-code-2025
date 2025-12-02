@@ -15,7 +15,7 @@
     "build:wasm": "cd ../rust-wasm && wasm-pack build --target web --release && cd ../frontend",
     "build:wasm:dev": "cd ../rust-wasm && wasm-pack build --target web --dev && cd ../frontend",
     "build:docker": "cd ../ && ./build_docker.ps1 && cd frontend",
-    "watch:wasm": "chokidar \"../rust-wasm/src/**/*.rs\" -c \"pnpm build:wasm:dev\"",
+    "watch:wasm": "pnpm build:wasm:dev && chokidar \"../rust-wasm/src/**/*.rs\" -c \"pnpm build:wasm:dev\"",
     "watch:angular": "ng build --watch --configuration development",
     "watch": "concurrently \"pnpm:watch:angular\" \"pnpm:watch:wasm\""
   },
