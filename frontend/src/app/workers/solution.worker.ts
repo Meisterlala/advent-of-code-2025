@@ -8,7 +8,7 @@ let initPromise: Promise<InitOutput> | null = null;
 
 async function ensureInit() {
   if (!initPromise) {
-    initPromise = init('advent_of_code_2025_bg.wasm');
+    initPromise = init({ module_or_path: 'advent_of_code_2025_bg.wasm' });
   }
   return initPromise;
 }
