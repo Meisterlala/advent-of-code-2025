@@ -1,12 +1,13 @@
 pub mod day_01;
 pub mod day_02;
+pub mod day_03;
 
 #[cfg(not(target_arch = "wasm32"))]
 pub mod download_input;
 
 use wasm_bindgen::prelude::*;
 
-pub static DAYS: &[&Day] = &[&day_01::SOLUTION, &day_02::SOLUTION];
+pub static DAYS: &[&Day] = &[&day_01::SOLUTION, &day_02::SOLUTION, &day_03::SOLUTION];
 
 #[wasm_bindgen]
 #[derive(Clone, Copy)]
