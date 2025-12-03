@@ -163,6 +163,10 @@ textarea:focus {
   font-size: medium;
 }
 
+.iframe-note-source {
+  display: none;
+}
+
 .stars {
   display: inline-block;
   font-size: large;
@@ -196,5 +200,8 @@ textarea:focus {
 @container (max-width: 400px) {
   .day-header .aoc-link {
     display: none;
+  }
+  .iframe-note-source {
+    display: block;
   }
 }

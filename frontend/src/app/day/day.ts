@@ -25,7 +25,7 @@ export class Day implements OnInit {
 
   ngOnInit(): void {
     this.aocUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://adventofcode.com/2025/day/${this.dayNumber()}`
+      `https://adventofcode.com/2025/day/${this.dayNumber()}`,
     );
   }
 
@@ -51,7 +51,7 @@ export class Day implements OnInit {
   }
 
   toggle() {
-    this.expanded.update((v) => !v);
+    this.expanded.update((v: boolean) => !v);
     if (this.expanded() && !this.inputData()) {
       this.inputData.set(this.config.example || '');
     }

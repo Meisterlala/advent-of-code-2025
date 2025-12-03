@@ -21,9 +21,9 @@
     <div class="day-summary" (click)="toggle()">
       <p>
         @if (this.isComplete) {
-        <span class="stars">⭐⭐</span>
+          <span class="stars">⭐⭐</span>
         } @else {
-        <span class="stars">⭐</span>
+          <span class="stars">⭐</span>
         }
         <span [innerHTML]="description() | latex"></span>
       </p>
@@ -33,6 +33,10 @@
       <div class="iframe-container">
         <div class="iframe-wrapper">
           <div class="iframe-header-text">
+            <span class="iframe-note-source">
+              My source code is availible on
+              <a [href]="sourceUrl" target="_blank" class="aoc-link">GitHub</a>.
+            </span>
             You can read the full puzzle description
             <a [href]="aocUrl" target="_blank" class="aoc-link">here</a>
           </div>
@@ -53,9 +57,18 @@
 
       <div class="parts-container">
         @if (config.part1) {
-        <app-part [dayNumber]="dayNumber()" [part]="'part1'" [puzzleInput]="inputData()"></app-part>
-        } @if (config.part2) {
-        <app-part [dayNumber]="dayNumber()" [part]="'part2'" [puzzleInput]="inputData()"></app-part>
+          <app-part
+            [dayNumber]="dayNumber()"
+            [part]="'part1'"
+            [puzzleInput]="inputData()"
+          ></app-part>
+        }
+        @if (config.part2) {
+          <app-part
+            [dayNumber]="dayNumber()"
+            [part]="'part2'"
+            [puzzleInput]="inputData()"
+          ></app-part>
         }
       </div>
     </div>
