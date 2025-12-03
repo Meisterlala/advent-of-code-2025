@@ -21,6 +21,7 @@ export class Part implements OnDestroy, OnInit {
 
   private worker: Worker | null = null;
   private readonly TIMEOUT_MS = 10000;
+  private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     effect(() => {
@@ -54,21 +55,29 @@ export class Part implements OnDestroy, OnInit {
     }
   }
 
+  private clearTimeoutIfAny() {
+    if (this.timeoutId !== null) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    }
+  }
+
+  // TODO: Refactor this whole thing, there should be a cleaner way to do this.
   private async run(input: string): Promise<void> {
     const trimmedInput = input.trim();
 
     // If input is empty, clear output and return
     if (!trimmedInput) {
+      this.clearTimeoutIfAny();
       this.output.set('');
       this.duration.set(null);
       return;
     }
 
+    this.clearTimeoutIfAny();
     // If the worker is currently running a calculation, we must terminate it
     // to cancel the previous operation, as WASM is blocking.
-    if (this.running()) {
-      this.terminateWorker();
-    }
+    this.terminateWorker();
 
     // If worker doesn't exist (was terminated or not created), create it
     if (!this.worker) {
@@ -85,6 +94,7 @@ export class Part implements OnDestroy, OnInit {
       this.handleError(e);
     } finally {
       this.running.set(false);
+      this.clearTimeoutIfAny();
     }
   }
 
@@ -92,13 +102,14 @@ export class Part implements OnDestroy, OnInit {
     return new Promise((resolve, reject) => {
       if (!this.worker) return reject(new Error('Worker not initialized'));
 
-      const timeoutId = setTimeout(() => {
+      this.timeoutId = setTimeout(() => {
         this.terminateWorker();
+        this.timeoutId = null;
         reject(new Error(`Calculation timed out after ${this.TIMEOUT_MS / 1000} seconds`));
       }, this.TIMEOUT_MS);
 
       this.worker.onmessage = ({ data }: { data: WorkerResponse }) => {
-        clearTimeout(timeoutId);
+        this.clearTimeoutIfAny();
         if ('error' in data) {
           reject(new Error(data.error));
         } else if ('result' in data && 'duration' in data) {
@@ -109,7 +120,7 @@ export class Part implements OnDestroy, OnInit {
       };
 
       this.worker.onerror = (err) => {
-        clearTimeout(timeoutId);
+        this.clearTimeoutIfAny();
         reject(err);
       };
 
