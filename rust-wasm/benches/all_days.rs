@@ -7,7 +7,7 @@ use advent_of_code_2025::download_input;
 pub fn seperate(c: &mut Criterion) {
     for d in DAYS {
         let input = get_input(d.day);
-        let mut group = c.benchmark_group(format!("day{:02}", d.day));
+        let mut group = c.benchmark_group(format!("day{:02}_seperate", d.day));
         if let Some(p1) = d.part1 {
             group.bench_function("Part 1", |b| b.iter(|| p1(&input)));
         }
@@ -21,7 +21,7 @@ pub fn seperate(c: &mut Criterion) {
 pub fn combined(c: &mut Criterion) {
     for d in DAYS {
         let input = get_input(d.day);
-        c.bench_function(&format!("day{:02}", d.day), |b| {
+        c.bench_function(&format!("day{:02}_combined", d.day), |b| {
             b.iter(|| {
                 if let Some(p1) = d.part1 {
                     p1(&input);
@@ -56,7 +56,7 @@ fn get_input(day: u32) -> String {
 criterion_group! {
     name = benches;
     config = Criterion::default().measurement_time(Duration::from_secs(30));
-    targets = combined
+    targets = combined, seperate
 }
 
 criterion_main!(benches);

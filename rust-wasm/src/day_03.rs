@@ -21,72 +21,45 @@ pub fn solve_a(input: &str) -> u64 {
     let (rest, banks) = parse(input).expect("Failed to parse input");
     assert!(rest.is_empty(), "Unparsed input remaining");
 
-    // Go through and find the max values
-    let mut total: u64 = 0;
-    for bank in &banks {
-        let max = bank
-            .iter()
-            .take(bank.len() - 1)
-            .max()
-            .expect("There has to be at least one number");
-        let max_index = bank
-            .iter()
-            .position(|d| d == max)
-            .expect("Max has to be in the bank, we found it earlier");
-        let second_max = bank
-            .iter()
-            .skip(max_index + 1)
-            .max()
-            .expect("There has to be a second number, we skipped the last");
-        let bank_sum: u64 = (max * 10 + second_max) as u64;
-
-        assert!(bank_sum < 100, "Bank sum must be two digits");
-        total += bank_sum;
-    }
-    total
+    banks.iter().map(|bank| find_max_joltage(bank, 2)).sum()
 }
 
 pub fn solve_b(input: &str) -> u64 {
     let (rest, banks) = parse(input).expect("Failed to parse input");
     assert!(rest.is_empty(), "Unparsed input remaining");
 
-    // Go through and find the max values
+    banks.iter().map(|bank| find_max_joltage(bank, 12)).sum()
+}
+
+fn find_max_joltage(bank: &[u8], limit: u32) -> u64 {
+    assert!(
+        bank.len() >= limit as usize,
+        "Bank must be at least as long as limit"
+    );
+
     let mut total: u64 = 0;
-    for bank in &banks {
-        assert!(
-            bank.len() >= 12,
-            "Bank must have at least 12 digits for part B"
-        );
+    let mut last_index = 0;
 
-        let mut result = [0u8; 12];
-        let mut last_index = 0;
-
-        for n in 0..12 {
-            let max = bank
-                .iter()
-                .skip(last_index)
-                .take(bank.len() - (12 - n) - last_index + 1)
-                .map(|d| *d)
-                .max()
-                .expect("There has to be at least one number");
-            let max_index = bank
-                .iter()
-                .skip(last_index)
-                .position(|&d| d == max)
-                .expect("Max has to be in the bank, we found it earlier");
-            last_index = max_index + 1 + last_index;
-            result[n] = max;
-        }
-
-        let bank_sum: u64 = result
-            .iter()
-            .enumerate()
-            .map(|(i, d)| (*d as u64) * 10u64.pow(11 - i as u32))
-            .sum();
-
-        total += bank_sum;
+    for n in 0..limit {
+        let slice = &bank[last_index..=(bank.len() - (limit - n) as usize)];
+        let (max, max_index) = find_max(slice);
+        last_index += max_index + 1;
+        // println!("{slice:?} -> max {max} at index {last_index}");
+        total += 10u64.pow(limit - 1 - n) * (u64::from(max));
     }
+
     total
+}
+
+fn find_max(input: &[u8]) -> (u8, usize) {
+    let (mut max_index, mut max) = (0, 0);
+    for (index, &value) in input.iter().enumerate() {
+        if value > max {
+            max = value;
+            max_index = index;
+        }
+    }
+    (max, max_index)
 }
 
 #[cfg(test)]

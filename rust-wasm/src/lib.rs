@@ -1,14 +1,12 @@
-pub mod day_01;
-pub mod day_02;
-pub mod day_03;
-
 #[cfg(not(target_arch = "wasm32"))]
 pub mod download_input;
 
 use wasm_bindgen::prelude::*;
 
-pub static DAYS: &[&Day] = &[&day_01::SOLUTION, &day_02::SOLUTION, &day_03::SOLUTION];
+// Specify all days here
+days!(day_01, day_02, day_03);
 
+// WASM Interface. For some reason i cant use strings. So its all wrapped functions.
 #[wasm_bindgen]
 #[derive(Clone, Copy)]
 pub struct Day {
@@ -72,14 +70,8 @@ pub fn get_days() -> Vec<Day> {
     DAYS.iter().map(|&&d| d).collect()
 }
 
-#[wasm_bindgen]
-pub fn get_day_description(day: u32) -> Option<String> {
-    get_day(day).map(|d| d.desc())
-}
-
 #[doc(hidden)]
 pub fn __to_string<T: std::fmt::Display>(value: T) -> String {
-    // Converts any Display output into the string the WASM interface expects.
     value.to_string()
 }
 
@@ -105,5 +97,19 @@ macro_rules! solution {
             part1: Some(|input| -> String { $crate::__to_string($part1(input)) }),
             part2: Some(|input| -> String { $crate::__to_string($part2(input)) }),
         };
+    };
+}
+
+#[macro_export]
+macro_rules! days {
+    ( $( $mod:ident ),* $(,)? ) => {
+        $(
+            pub mod $mod;
+        )*
+        pub static DAYS: &[&Day] = &[
+            $(
+                &$mod::SOLUTION,
+            )*
+        ];
     };
 }

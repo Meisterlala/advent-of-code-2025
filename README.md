@@ -64,6 +64,8 @@ You can benchmark the performance of the code using the following commands:
 cd rust-wasm
 # Benchmark all the days
 cargo bench
+# See all available benchmarks
+cargo bench -- --list
 # Benchmark a specific day
 cargo bench day01
 ```
