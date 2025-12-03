@@ -25,7 +25,7 @@
         } @else {
         <span class="stars">⭐</span>
         }
-        <span [innerHTML]="description()"></span>
+        <span [innerHTML]="description() | latex"></span>
       </p>
     </div>
 

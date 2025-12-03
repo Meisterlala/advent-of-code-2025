@@ -44,7 +44,7 @@ export class App implements OnInit {
         this.worker.postMessage(request);
       });
 
-      console.log(`Loaded from wasm worker:`, days);
+      console.log(`Days loaded from wasm worker:`, days);
       this.days.set(days);
     } catch (error) {
       console.error('Failed to load days from worker.', error);

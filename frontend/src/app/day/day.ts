@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DayConfig } from '../models/day-config';
 import { Part } from '../part/part';
+import { LatexPipe } from '../shared/latex.pipe';
 
 @Component({
   selector: 'app-day',
-  imports: [CommonModule, FormsModule, Part],
+  imports: [CommonModule, FormsModule, Part, LatexPipe],
   templateUrl: './day.html',
   styleUrl: './day.css',
   host: {
@@ -24,7 +25,7 @@ export class Day implements OnInit {
 
   ngOnInit(): void {
     this.aocUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://adventofcode.com/2025/day/${this.dayNumber()}`,
+      `https://adventofcode.com/2025/day/${this.dayNumber()}`
     );
   }
 
