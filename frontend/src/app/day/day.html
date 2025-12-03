@@ -2,12 +2,14 @@
   <div class="day-header">
     <div class="header-title">
       <h3>{{ title() }}</h3>
-      <a [href]="aocUrl" target="_blank" class="aoc-link" (click)="$event.stopPropagation()">
-        [Link]
-      </a>
-      <a [href]="sourceUrl" target="_blank" class="aoc-link" (click)="$event.stopPropagation()">
-        [Code]
-      </a>
+      <div class="header-links">
+        <a [href]="aocUrl" target="_blank" class="aoc-link" (click)="$event.stopPropagation()">
+          [Link]
+        </a>
+        <a [href]="sourceUrl" target="_blank" class="aoc-link" (click)="$event.stopPropagation()">
+          [Code]
+        </a>
+      </div>
     </div>
     <div class="header-controls" (click)="toggle()">
       <span class="toggle-text">{{ expanded() ? 'Close' : 'Solve' }}</span>

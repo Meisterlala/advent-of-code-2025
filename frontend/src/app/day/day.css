@@ -1,5 +1,6 @@
 :host {
   display: block;
+  container-type: inline-size;
 }
 
 .day-container {
@@ -8,8 +9,11 @@
   background-color: #1a1a2e;
   color: #cccccc;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   font-size: large;
+  height: 100%;
 }
 
 .day-container:hover {
@@ -31,6 +35,7 @@
   align-items: center;
   gap: 10px;
   min-width: 0;
+  flex: 1;
 }
 
 .header-controls {
@@ -53,6 +58,15 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1 1 auto;
+}
+
+.header-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 3px;
+  flex: 0 0 auto;
 }
 
 .aoc-link {
@@ -107,7 +121,7 @@ textarea {
   border: 1px solid #555566;
   padding: 10px;
   font-size: small;
-  font-family: "Source Code Pro", monospace;
+  font-family: 'Source Code Pro', monospace;
   resize: vertical;
   border-radius: 3px;
   width: 100%;
@@ -162,12 +176,25 @@ textarea:focus {
 }
 
 @keyframes idle-shine {
-  0%, 100% {
+  0%,
+  100% {
     text-shadow: 0 0 2px #ffff66;
-    transform: scale(1.0);
+    transform: scale(1);
   }
   50% {
     text-shadow: 0 0 5px #ffff66;
     transform: scale(1.15);
+  }
+}
+
+@media (max-width: 800px) {
+  .iframe-container iframe {
+    display: none;
+  }
+}
+
+@container (max-width: 400px) {
+  .day-header .aoc-link {
+    display: none;
   }
 }

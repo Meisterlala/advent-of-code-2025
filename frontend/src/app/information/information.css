@@ -14,3 +14,12 @@
   margin-top: 0;
   text-shadow: 0 0 2px #00cc00;
 }
+a {
+  color: #009900;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #00ff00;
+  text-decoration: underline;
+}

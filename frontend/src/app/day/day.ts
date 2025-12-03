@@ -24,7 +24,7 @@ export class Day implements OnInit {
 
   ngOnInit(): void {
     this.aocUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://adventofcode.com/2025/day/${this.dayNumber()}`
+      `https://adventofcode.com/2025/day/${this.dayNumber()}`,
     );
   }
 
@@ -38,10 +38,7 @@ export class Day implements OnInit {
   }
 
   protected description() {
-    return (
-      this.config?.description ||
-      'This is a placeholder for the problem description and solution notes. You can describe the algorithm used, complexity, or any interesting tricks.'
-    );
+    return this.config?.description || '';
   }
 
   protected get isComplete() {

@@ -1,4 +1,11 @@
-crate::solution!(3, "Lobby", "", &EXAMPLE, solve_a, solve_b);
+crate::solution!(
+    3,
+    "Lobby",
+    "If you look at any prefix of the input that excludes the last n(2/12) digits, the largest digit in that prefix is the first digit of the answer. This lets you greedily solve the problem, and array slicing makes the implementation efficient.",
+    &EXAMPLE,
+    solve_a,
+    solve_b
+);
 
 static EXAMPLE: &str = "987654321111111
 811111111111119
