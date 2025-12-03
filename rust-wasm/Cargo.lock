@@ -9,6 +9,7 @@ dependencies = [
  "criterion",
  "dotenv",
  "nom",
+ "rayon",
  "reqwest",
  "wasm-bindgen",
 ]
