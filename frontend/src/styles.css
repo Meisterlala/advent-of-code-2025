@@ -20,13 +20,12 @@
   src: url('../public/Source-Code-Pro.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap; 
+  font-display: swap;
 }
-
 
 body {
   margin: 0;
-  font-family: Roboto, "Source Code Pro",Arial, Helvetica, sans-serif, monospace;
+  font-family: Roboto, 'Source Code Pro', Arial, Helvetica, sans-serif, monospace;
   background-color: #0f0f23;
   color: #cccccc;
 }
@@ -39,4 +38,8 @@ a {
 a:hover,
 a:focus {
   text-decoration: underline;
+}
+
+.day-summary .katex {
+  color: #dddd66;
 }

@@ -172,6 +172,7 @@ textarea:focus {
   font-size: large;
   padding-right: 6px;
   translate: 0 -2px;
+  color: #ffff66;
 }
 
 /* Only animate while hovering */

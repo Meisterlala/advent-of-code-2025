@@ -18,8 +18,22 @@ export class LatexPipe implements PipeTransform {
 
     // Replace $...$ math segments with KaTeX-rendered HTML
     const inlineMath = /\$(.+?)\$/g;
+    const blockMath = /\$\$(.+?)\$\$/gs;
 
     let result = value;
+
+    result = result.replace(blockMath, (org, expr: string) => {
+      try {
+        return katex.renderToString(expr, {
+          throwOnError: true,
+          displayMode: true,
+        });
+      } catch (err) {
+        console.error('KaTeX rendering error:', err);
+        return '[LATEX ERROR]';
+      }
+    });
+
     result = result.replace(inlineMath, (org, expr: string) => {
       try {
         return katex.renderToString(expr, {

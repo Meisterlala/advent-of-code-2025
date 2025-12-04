@@ -1,7 +1,7 @@
 crate::solution!(
     4,
     "Printing Department",
-    r"This is just a 2D array iteration where i apply a kernel. The current solution is brute force",
+    r"This is just a 2D array iteration where i apply a kernel. The current solution is brute force. But it could be optimized by precomputing the number of neighbours. And then using a queue to only recheck rolls that are adjacent to changed rolls. Or with a Matrix convolution approach.",
     &EXAMPLE,
     solve_a,
     solve_b

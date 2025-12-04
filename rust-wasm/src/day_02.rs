@@ -1,7 +1,12 @@
 crate::solution!(
     2,
     "Gift Shop",
-    "I iterate through the list of IDs and filter them. This is pretty straightforward but not very efficient, because it needs a lot of string comparisons.",
+    r"We can generate the invalid IDs instead of brute force checking each ID in the range, because most IDs are valid. 
+    Assume we have a repeating pattern $p$ with $d$ digits that is repeated $k$ times, then the invalid IDs are of form:<br> 
+    $$\text{Part1}= p * (10^d+1)$$
+    $$\text{Part2} = p* \sum_{i=0}^{k-1}{10^{i*d}}=p* \frac{10^{k*d}-1}{10^k -1}$$
+    We can transform the part 2 formular into a closed form to reduce iterations.
+    ",
     &EXAMPLE,
     solve_a,
     solve_b
@@ -11,7 +16,7 @@ static EXAMPLE: &str = "11-22,95-115,998-1012,1188511880-1188511890,222220-22222
 1698522-1698528,446443-446449,38593856-38593862,565653-565659,
 824824821-824824827,2121212118-2121212124";
 
-use std::ops::Range;
+use std::{collections::HashSet, ops::Range};
 
 use nom::{
     IResult, Parser,
@@ -21,9 +26,10 @@ use nom::{
     multi::{many1, separated_list1},
 };
 
+// Genereate all the valid ids and then check the ranges
 pub fn solve_a(input: &str) -> u64 {
     let (remaining, ranges) = parse(input).expect("Failed to parse ranges");
-    assert!(
+    debug_assert!(
         remaining.is_empty(),
         "Unparsed input remaining: {}",
         remaining
@@ -31,67 +37,95 @@ pub fn solve_a(input: &str) -> u64 {
 
     ranges
         .iter()
-        .flat_map(|range| {
-            range
-                .clone()
-                .filter(|&id| has_repeats_a(id))
-                .collect::<Vec<u64>>()
-        })
+        .flat_map(move |range| invalid_a(range))
         .sum::<u64>()
 }
 
 pub fn solve_b(input: &str) -> u64 {
     let (remaining, ranges) = parse(input).expect("Failed to parse ranges");
-    assert!(
+    debug_assert!(
         remaining.is_empty(),
         "Unparsed input remaining: {}",
         remaining
     );
 
-    ranges
+    let max_digits = ranges
         .iter()
-        .flat_map(|range| {
-            range
-                .clone()
-                .filter(|&id| has_repeats_b(id))
-                .collect::<Vec<u64>>()
+        .map(|range| range.end)
+        .max()
+        .unwrap_or(0)
+        .to_string()
+        .len();
+
+    // Require a set to dont double count numbers, that might have the same pattern with different repitions
+    // Like [11][11][11] and [1][1][1][1][1][1][1] or [111][111]
+    let set = (2..=max_digits)
+        .flat_map(|repitions| {
+            ranges
+                .iter()
+                .flat_map(move |range| invalid_b(range, repitions))
         })
-        .sum::<u64>()
+        .collect::<HashSet<u64>>();
+
+    set.into_iter().sum::<u64>()
 }
 
-fn has_repeats_a(id: u64) -> bool {
-    let id_str = id.to_string();
-    // Not in sample input
-    // let id_str = id_str.strip_prefix("0").unwrap_or(&id_str);
-    let len = id_str.len();
+/// N = base * (10^d + 1)
+fn invalid_a(range: &Range<u64>) -> impl Iterator<Item = u64> {
+    // A 64Bit number can only have 20 digits, so we only need to check up to 10 digits repeated twice
+    (1..=10).flat_map(move |num_digits| {
+        // We calculate the multiplier for the current number of digits
+        let multiplier = 10u64.pow(num_digits) + 1;
 
-    // Cant have repeats if length is odd
-    if !len.is_multiple_of(2) {
-        return false;
-    }
+        // Calculate which bases produce numbers in [start, end]
+        let min_base = range.start.div_ceil(multiplier);
+        let max_base = range.end / multiplier;
 
-    let sub_str = &id_str[0..len / 2];
-    if sub_str == &id_str[len / 2..] {
-        return true;
-    }
-    false
+        // Base must have exactly num_digits
+        let base_start = 10u64.pow(num_digits - 1);
+        let base_end = 10u64.pow(num_digits);
+
+        (min_base.max(base_start)..=max_base.min(base_end - 1))
+            .map(move |base| base * multiplier)
+            .filter(move |&n| n >= range.start && n <= range.end)
+    })
 }
 
-fn has_repeats_b(id: u64) -> bool {
-    let id_str = id.to_string();
-    // Not in sample input
-    // let id_str = id_str.strip_prefix("0").unwrap_or(&id_str);
-    let len = id_str.len();
+/// N = base * (10^d - 1) / (10^d - 1)
+/// Referenced: https://github.com/G36maid/advent-of-code-2025/blob/main/src/bin/02.rs
+fn invalid_b(range: &Range<u64>, repitions: usize) -> impl Iterator<Item = u64> {
+    let start_digits = range.start.to_string().len();
+    let end_digits = range.end.to_string().len();
 
-    for sub_len in 1..=(len / 2) {
-        if len.is_multiple_of(sub_len) {
-            let sub_str = &id_str[0..sub_len];
-            if sub_str.repeat(len / sub_len) == id_str {
-                return true;
-            }
-        }
-    }
-    false
+    // Determine min and max pattern lengths needed for this range and k
+    let min_pattern_len = start_digits.div_ceil(repitions);
+    let max_pattern_len = end_digits / repitions;
+
+    (min_pattern_len..=max_pattern_len).flat_map(move |pattern_len| {
+        let base_start = 10u64.pow(pattern_len.saturating_sub(1) as u32);
+        let base_end = 10u64.pow(pattern_len as u32);
+
+        let d = pattern_len as u32;
+        let power_d = 10u64.pow(d);
+
+        // Calculate the geometric series sum multiplier
+        let multiplier = if let Some(power_kd) = 10u64.checked_pow(repitions as u32 * d) {
+            (power_kd - 1) / (power_d - 1)
+        } else {
+            return (0..0)
+                .filter_map(|_| None::<u64>)
+                .collect::<Vec<_>>()
+                .into_iter();
+        };
+
+        (base_start..base_end)
+            .filter_map(move |base| {
+                base.checked_mul(multiplier)
+                    .filter(|&n| n >= range.start && n <= range.end)
+            })
+            .collect::<Vec<_>>()
+            .into_iter()
+    })
 }
 
 pub fn parse(input: &str) -> IResult<&str, Vec<Range<u64>>> {
