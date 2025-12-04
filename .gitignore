@@ -3,3 +3,5 @@ rust-wasm/pkg/
 
 rust-wasm/.env
 rust-wasm/inputs/day*
+
+rust-wasm/perf.data*

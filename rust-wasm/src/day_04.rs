@@ -1,7 +1,7 @@
 crate::solution!(
     4,
     "Printing Department",
-    r"This is just a 2D array iteration where i apply a kernel. The current solution is brute force. But it could be optimized by precomputing the number of neighbours. And then using a queue to only recheck rolls that are adjacent to changed rolls. Or with a Matrix convolution approach.",
+    r"Simple Cellular Automaton Simulation using matrix convolution with a $3 \times 3$ kernel. This could be optimized further by keeping track of recently changed cell neighbours in a queue.",
     &EXAMPLE,
     solve_a,
     solve_b
@@ -18,6 +18,8 @@ static EXAMPLE: &str = "..@@.@@@@.
 .@@@@@@@@.
 @.@.@@@.@.";
 
+use ndarray::prelude::*;
+use ndarray_conv::{ConvExt, ConvMode, PaddingMode};
 use nom::{
     IResult, Parser,
     character::complete::{multispace1, one_of},
@@ -44,91 +46,57 @@ pub fn parse(input: &str) -> IResult<&str, Vec<Vec<bool>>> {
 
 pub fn solve_a(input: &str) -> u64 {
     let (_, grid) = parse(input).expect("Failed to parse input");
+    let rows = grid.len();
+    let cols = grid[0].len();
 
-    let mut accessible_rolls = 0u64;
+    // Convert vec to ndarray
+    let matrix = Array2::from_shape_fn((rows, cols), |(r, c)| if grid[r][c] { 1u8 } else { 0u8 });
 
-    // Just 2d grid iteration
-    for row_index in 0..grid.len() {
-        for col_index in 0..grid[0].len() {
-            // Not a roll
-            if !grid[row_index][col_index] {
-                continue;
-            }
+    // Convolution kernel
+    let kernel = arr2(&[[1u8, 1u8, 1u8], [1u8, 0u8, 1u8], [1u8, 1u8, 1u8]]);
+    let mut neighbours = matrix
+        .conv(&kernel, ConvMode::Same, PaddingMode::Zeros)
+        .expect("Should never fail, unless the data is messed up");
 
-            let neighbour_row_start = row_index.saturating_sub(1);
-            let neighbour_col_start = col_index.saturating_sub(1);
-            let neighbour_row_end = (row_index + 1).min(grid.len() - 1);
-            let neighbour_col_end = (col_index + 1).min(grid[col_index].len() - 1);
+    // Filter
+    neighbours.mapv_inplace(|x| if x < 4 { 1u8 } else { 0u8 });
+    let accessible = matrix * neighbours;
 
-            let mut neightbour_count = 0;
-            'neighbours: for n_row in neighbour_row_start..=neighbour_row_end {
-                for n_col in neighbour_col_start..=neighbour_col_end {
-                    if n_row == row_index && n_col == col_index {
-                        continue;
-                    }
-                    if grid[n_row][n_col] {
-                        neightbour_count += 1;
-                    }
-                    // Early exit if already too many neighbours
-                    if neightbour_count > 3 {
-                        break 'neighbours;
-                    }
-                }
-            }
-            if neightbour_count < 4 {
-                accessible_rolls += 1;
-            }
-        }
-    }
-
-    accessible_rolls
+    accessible.sum() as u64
 }
 
 pub fn solve_b(input: &str) -> u64 {
-    let (_, mut grid) = parse(input).expect("Failed to parse input");
+    let (_, grid) = parse(input).expect("Failed to parse input");
+    let rows = grid.len();
+    let cols = grid[0].len();
 
-    let mut accessible_rolls = 0u64;
+    // Convert vec to ndarray
+    let mut matrix =
+        Array2::from_shape_fn((rows, cols), |(r, c)| if grid[r][c] { 1u8 } else { 0u8 });
+    // Convolution kernel
+    let kernel = arr2(&[[1u8, 1u8, 1u8], [1u8, 0u8, 1u8], [1u8, 1u8, 1u8]]);
+
     let mut changed = true;
+    let inital_count = matrix.sum() as u64;
+    let mut count = u64::MAX;
 
     while changed {
-        changed = false;
-        for row_index in 0..grid.len() {
-            for col_index in 0..grid[0].len() {
-                // Not a roll
-                if !grid[row_index][col_index] {
-                    continue;
-                }
+        // Apply Kernel
+        let mut neighbours = matrix
+            .conv(&kernel, ConvMode::Same, PaddingMode::Zeros)
+            .expect("Should never fail, unless the data is messed up");
 
-                let neighbour_row_start = row_index.saturating_sub(1);
-                let neighbour_col_start = col_index.saturating_sub(1);
-                let neighbour_row_end = (row_index + 1).min(grid.len() - 1);
-                let neighbour_col_end = (col_index + 1).min(grid[col_index].len() - 1);
+        // Filter
+        neighbours.mapv_inplace(|x| if x < 4 { 0u8 } else { 1u8 });
+        matrix = matrix * neighbours;
 
-                let mut neightbour_count = 0;
-                'neighbours: for n_row in neighbour_row_start..=neighbour_row_end {
-                    for n_col in neighbour_col_start..=neighbour_col_end {
-                        if n_row == row_index && n_col == col_index {
-                            continue;
-                        }
-                        if grid[n_row][n_col] {
-                            neightbour_count += 1;
-                        }
-                        // Early exit if already too many neighbours
-                        if neightbour_count > 3 {
-                            break 'neighbours;
-                        }
-                    }
-                }
-                if neightbour_count < 4 {
-                    changed = true;
-                    grid[row_index][col_index] = false;
-                    accessible_rolls += 1;
-                }
-            }
-        }
+        // Check if anything changed
+        let current_count = matrix.sum() as u64;
+        changed = current_count != count;
+        count = current_count;
     }
 
-    accessible_rolls
+    inital_count - count
 }
 
 #[cfg(test)]

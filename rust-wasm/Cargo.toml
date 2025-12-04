@@ -13,6 +13,10 @@ wasm-bindgen = "0.2.105"
 # For parsing the input
 nom = "8.0.0"
 
+# For numerical computations
+ndarray = {version = "0.17.1", features = ["rayon"] }
+ndarray-conv = "0.6.0"
+
 # For parallel processing
 rayon = "1.11.0"
 
