@@ -1,6 +1,6 @@
 crate::solution!(
     5,
-    "Printing Department",
+    "Cafeteria",
     r"For Part 2 we insert the ranges into a new list while merging overlaps, so we don't double count anything",
     &EXAMPLE,
     solve_a,
