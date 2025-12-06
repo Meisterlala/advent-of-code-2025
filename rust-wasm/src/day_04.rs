@@ -62,7 +62,7 @@ pub fn solve_a(input: &str) -> u64 {
     neighbours.mapv_inplace(|x| if x < 4 { 1u8 } else { 0u8 });
     let accessible = matrix * neighbours;
 
-    accessible.sum() as u64
+    accessible.iter().map(|&x| u64::from(x)).sum()
 }
 
 pub fn solve_b(input: &str) -> u64 {
@@ -77,7 +77,7 @@ pub fn solve_b(input: &str) -> u64 {
     let kernel = arr2(&[[1u8, 1u8, 1u8], [1u8, 0u8, 1u8], [1u8, 1u8, 1u8]]);
 
     let mut changed = true;
-    let inital_count = matrix.sum() as u64;
+    let inital_count: u64 = matrix.iter().map(|&x| u64::from(x)).sum();
     let mut count = u64::MAX;
 
     while changed {
@@ -91,7 +91,7 @@ pub fn solve_b(input: &str) -> u64 {
         matrix = matrix * neighbours;
 
         // Check if anything changed
-        let current_count = matrix.sum() as u64;
+        let current_count = matrix.iter().map(|&x| u64::from(x)).sum();
         changed = current_count != count;
         count = current_count;
     }
