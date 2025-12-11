@@ -1,7 +1,7 @@
 crate::solution!(
     6,
     "Trash Compactor",
-    r"Parsing made part2 difficult",
+    r"Parsing made Part 2 difficult",
     &EXAMPLE,
     solve_a,
     solve_b
