@@ -6,6 +6,7 @@ crate::solution!(
     solve_a,
     solve_b
 );
+// TODO: Optimize with graph theory, this needs a disjoint set union and kuruskal's algorithm
 
 static EXAMPLE: &str = "162,817,812
 57,618,57
