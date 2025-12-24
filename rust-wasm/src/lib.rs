@@ -5,7 +5,7 @@ use wasm_bindgen::prelude::*;
 
 // Specify all days here
 days!(
-    day_01, day_02, day_03, day_04, day_05, day_06, day_07, day_08
+    day_01, day_02, day_03, day_04, day_05, day_06, day_07, day_08, day_09,
 );
 
 // WASM Interface. For some reason i cant use strings. So its all wrapped functions.
