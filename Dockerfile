@@ -24,7 +24,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
     wasm-pack build --target web --release
 
 # Stage 2: Build Angular Frontend
-FROM node:22-slim AS frontend-builder
+FROM node:24-slim AS frontend-builder
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
