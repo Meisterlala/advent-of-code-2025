@@ -18,10 +18,8 @@
       "labels": ["breaking-change"]
     }
   ],
-  "pnpm": {
-    "enabled": true
-  },
   "timezone": "UTC",
   "schedule": ["before 5am on monday"],
   "dependencyDashboard": true
 }
+
