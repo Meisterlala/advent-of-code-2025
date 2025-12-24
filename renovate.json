@@ -33,5 +33,6 @@
   "schedule": [
     "before 5am on monday"
   ],
-  "dependencyDashboard": true
+  "dependencyDashboard": true,
+  "abandonmentThreshold": "4 years"
 }
