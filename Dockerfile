@@ -1,5 +1,5 @@
 # Stage 1: Build Rust WASM
-FROM rust:1.91 AS rust-builder
+FROM rust:1.92@sha256:48851a839d6a67370c9dbe0e709bedc138e3e404b161c5233aedcf2b717366e4 AS rust-builder
 
 # Install wasm-pack
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
