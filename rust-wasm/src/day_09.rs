@@ -1,7 +1,7 @@
 crate::solution!(
     9,
     "Movie Theater",
-    r#"For Part 2 I'm using the <a href="https://en.wikipedia.org/wiki/Point_in_polygon">point in polygon</a> algorithm to check if the rectangle is valid."#,
+    r#"For Part 2 I'm checking if a line intersects the area and consider it invalid."#,
     &EXAMPLE,
     solve_a,
     solve_b
@@ -117,11 +117,20 @@ where
     let max_x = tiles.iter().map(|&(x, _)| x).max().unwrap();
     let max_y = tiles.iter().map(|&(_, y)| y).max().unwrap();
 
+    // Create lines from tiles
+    let mut lines: Vec<((i128, i128), (i128, i128))> = Vec::with_capacity(tiles.len());
+    for i in 0..tiles.len() {
+        let next = (i + 1) % tiles.len();
+        let start = (tiles[i].0 as i128, tiles[i].1 as i128);
+        let end = (tiles[next].0 as i128, tiles[next].1 as i128);
+        lines.push((start, end));
+    }
+
     for y in 0..=max_y {
         for x in 0..=max_x {
             if tiles.contains(&(x, y)) {
                 print!("#");
-            } else if point_in_polygon((x.into(), y.into()), &tiles) {
+            } else if line_intersects_rect(&((x, y), (x, y)), &lines) {
                 print!("X");
             } else {
                 print!(".");
@@ -150,7 +159,15 @@ pub fn solve_b(input: &str) -> u64 {
     }
     // Sort areas descending
     areas.sort_unstable_by(|a, b| b.area.cmp(&a.area));
-    // print_areas(&areas, &tiles);
+
+    // Create lines from tiles
+    let mut lines: Vec<((i128, i128), (i128, i128))> = Vec::with_capacity(tiles.len());
+    for i in 0..tiles.len() {
+        let next = (i + 1) % tiles.len();
+        let start = (tiles[i].0 as i128, tiles[i].1 as i128);
+        let end = (tiles[next].0 as i128, tiles[next].1 as i128);
+        lines.push((start, end));
+    }
 
     // Convert to i128
     let tiles: Vec<(i128, i128)> = tiles.iter().map(|&(x, y)| (x as i128, y as i128)).collect();
@@ -159,64 +176,65 @@ pub fn solve_b(input: &str) -> u64 {
     for area in areas {
         let (x, y) = (tiles[area.x_index], tiles[area.y_index]);
 
-        // Check that all are inside the polygon
-        let top = if x.0 < y.0 { x.0..=y.0 } else { y.0..=x.0 }.map(|xx| (xx, x.1));
-        let bottom = if x.0 < y.0 { x.0..=y.0 } else { y.0..=x.0 }.map(|xx| (xx, y.1));
-        let left = if x.1 < y.1 { x.1..=y.1 } else { y.1..=x.1 }.map(|yy| (x.0, yy));
-        let right = if x.1 < y.1 { x.1..=y.1 } else { y.1..=x.1 }.map(|yy| (y.0, yy));
-        let sides = top
-            .chain(bottom)
-            .chain(left)
-            .chain(right)
-            .collect::<Vec<(i128, i128)>>();
+        let (min_x, max_x) = if x.0 < y.0 { (x.0, y.0) } else { (y.0, x.0) };
+        let (min_y, max_y) = if x.1 < y.1 { (x.1, y.1) } else { (y.1, x.1) };
 
-        if sides
-            .into_par_iter()
-            .all(|point| point_in_polygon(point, &tiles))
-        {
-            return area.area;
+        if line_intersects_rect(&((min_x + 1, min_y + 1), (max_x - 1, max_y - 1)), &lines) {
+            continue;
         }
+
+        return area.area;
     }
 
     panic!("No valid area found");
 }
 
-/// Only works for axis aligned polygons
-fn point_in_polygon(point: (i128, i128), poly: &[(i128, i128)]) -> bool {
-    let (px, py) = point;
-    let mut inside = false;
+fn line_intersects_rect(
+    rect: &((i128, i128), (i128, i128)),
+    lines: &[((i128, i128), (i128, i128))],
+) -> bool {
+    let ((rx1, ry1), (rx2, ry2)) = rect;
 
-    let n = poly.len();
-    let mut j = n - 1;
+    let rect_lines = vec![
+        ((*rx1, *ry1), (*rx2, *ry1)), // top
+        ((*rx2, *ry1), (*rx2, *ry2)), // right
+        ((*rx2, *ry2), (*rx1, *ry2)), // bottom
+        ((*rx1, *ry2), (*rx1, *ry1)), // left
+    ];
 
-    for i in 0..n {
-        let (xi, yi) = poly[i];
-        let (xj, yj) = poly[j];
-
-        // Check if point is on edge
-        if xi == xj {
-            // vertical edge
-            if px == xi && py >= yi.min(yj) && py <= yi.max(yj) {
-                return true;
-            }
-        } else {
-            // horizontal edge
-            if py == yi && px >= xi.min(xj) && px <= xi.max(xj) {
+    for line in lines {
+        for rect_line in &rect_lines {
+            if lines_intersect(line, rect_line) {
                 return true;
             }
         }
-
-        // ray casting
-        if xi == xj {
-            if (yi > py) != (yj > py) && px < xi {
-                inside = !inside;
-            }
-        }
-
-        j = i;
     }
 
-    inside
+    false
+}
+
+/// Check if two lines intersect, only for straight lines
+fn lines_intersect(
+    line1: &((i128, i128), (i128, i128)),
+    line2: &((i128, i128), (i128, i128)),
+) -> bool {
+    let ((x1, y1), (x2, y2)) = line1;
+    let ((x3, y3), (x4, y4)) = line2;
+
+    // Check if lines are vertical or horizontal
+    let line1_vertical = x1 == x2;
+    let line1_horizontal = y1 == y2;
+    let line2_vertical = x3 == x4;
+    let line2_horizontal = y3 == y4;
+
+    if line1_vertical && line2_horizontal {
+        // line1 is vertical, line2 is horizontal
+        return x1 >= x3.min(x4) && x1 <= x3.max(x4) && y3 >= y1.min(y2) && y3 <= y1.max(y2);
+    } else if line1_horizontal && line2_vertical {
+        // line1 is horizontal, line2 is vertical
+        return x3 >= x1.min(x2) && x3 <= x1.max(x2) && y1 >= y3.min(y4) && y1 <= y3.max(y4);
+    }
+    false
 }
 
 #[cfg(test)]
