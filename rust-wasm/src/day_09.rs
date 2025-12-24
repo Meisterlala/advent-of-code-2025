@@ -173,20 +173,20 @@ pub fn solve_b(input: &str) -> u64 {
     let tiles: Vec<(i128, i128)> = tiles.iter().map(|&(x, y)| (x as i128, y as i128)).collect();
 
     // For each area, check if all sided are green
-    for area in areas {
-        let (x, y) = (tiles[area.x_index], tiles[area.y_index]);
+    let max = areas
+        .into_par_iter()
+        .find_first(|area| {
+            let (x, y) = (tiles[area.x_index], tiles[area.y_index]);
 
-        let (min_x, max_x) = if x.0 < y.0 { (x.0, y.0) } else { (y.0, x.0) };
-        let (min_y, max_y) = if x.1 < y.1 { (x.1, y.1) } else { (y.1, x.1) };
+            let (min_x, max_x) = if x.0 < y.0 { (x.0, y.0) } else { (y.0, x.0) };
+            let (min_y, max_y) = if x.1 < y.1 { (x.1, y.1) } else { (y.1, x.1) };
 
-        if line_intersects_rect(&((min_x + 1, min_y + 1), (max_x - 1, max_y - 1)), &lines) {
-            continue;
-        }
-
-        return area.area;
-    }
-
-    panic!("No valid area found");
+            !line_intersects_rect(&((min_x + 1, min_y + 1), (max_x - 1, max_y - 1)), &lines)
+        })
+        .unwrap_or_else(|| {
+            panic!("No valid area found");
+        });
+    return max.area;
 }
 
 fn line_intersects_rect(
