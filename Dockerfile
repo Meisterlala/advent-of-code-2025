@@ -1,5 +1,5 @@
 # Stage 1: Build Rust WASM
-FROM rust:1.91 AS rust-builder
+FROM rust:1.91@sha256:867f1d1162913c401378a8504fb17fe2032c760dc316448766f150a130204aad AS rust-builder
 
 # Install wasm-pack
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
@@ -24,7 +24,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
     wasm-pack build --target web --release
 
 # Stage 2: Build Angular Frontend
-FROM node:22-slim AS frontend-builder
+FROM node:22-slim@sha256:773413f36941ce1e4baf74b4a6110c03dcc4f968daffc389d4caef3f01412d2a AS frontend-builder
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -47,7 +47,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN npx ng build --configuration production
 
 # Stage 3: Serve with Nginx
-FROM nginx:alpine
+FROM nginx:alpine@sha256:8491795299c8e739b7fcc6285d531d9812ce2666e07bd3dd8db00020ad132295
 
 # Copy built assets from frontend-builder
 COPY --from=frontend-builder /app/frontend/dist/frontend/browser /usr/share/nginx/html
