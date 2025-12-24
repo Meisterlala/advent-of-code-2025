@@ -1,25 +1,37 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"],
+  "extends": [
+    "config:best-practices"
+  ],
   "packageRules": [
     {
       "description": "Group all Angular core packages together",
-      "matchPackagePatterns": ["^@angular/"],
-      "groupName": "Angular ecosystem"
+      "groupName": "Angular ecosystem",
+      "matchPackageNames": [
+        "/^@angular//"
+      ]
     },
     {
       "description": "Group all RxJS and Zone.js (Angular dependencies)",
-      "matchPackageNames": ["rxjs", "zone.js"],
+      "matchPackageNames": [
+        "rxjs",
+        "zone.js"
+      ],
       "groupName": "Angular ecosystem"
     },
     {
       "description": "Flag major updates clearly as they might need 'ng update'",
-      "matchUpdateTypes": ["major"],
-      "labels": ["breaking-change"]
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "labels": [
+        "breaking-change"
+      ]
     }
   ],
   "timezone": "UTC",
-  "schedule": ["before 5am on monday"],
+  "schedule": [
+    "before 5am on monday"
+  ],
   "dependencyDashboard": true
 }
-
