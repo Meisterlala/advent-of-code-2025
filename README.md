@@ -61,7 +61,7 @@ This will start a local web server, usually at `http://localhost:4200`, where yo
 
 #### Rust standalone
 
-You can run the Rust code standalone without the Angular frontend. This produces a binary that runs the solutions in the terminal. To run the code, you'll first need to obtain the puzzle inputs from the [Advent of Code](https://adventofcode.com/2025) website and place them in the [input folder](inputs). Or save your session cookie in the environment variable `AOC_SESSION`.
+You can run the Rust code standalone without the Angular frontend. This produces a binary that runs the solutions in the terminal. To run the code, you'll first need to obtain the puzzle inputs from the [Advent of Code](https://adventofcode.com/2025) website and place them in the [input folder](rust-wasm/inputs). Or save your session cookie in the environment variable `AOC_SESSION`.
 
 You'll also need to have Rust installed on your system. If you haven't installed it yet, you can download it from [here](https://www.rust-lang.org/tools/install). Once you have Rust installed and the inputs in place, you can run all the puzzles using the following command:
 
