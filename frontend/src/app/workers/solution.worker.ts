@@ -58,7 +58,7 @@ function solveDay(
     if (e instanceof Error) {
       if (e.name === 'RuntimeError') {
         throw new Error(
-          `The rust code encountered a panic. Please check your input data and try again.`
+          `The rust code encountered a panic. Please check your input data and try again. Details: ${e.message}`
         );
       }
       throw new Error(

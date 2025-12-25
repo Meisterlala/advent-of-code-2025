@@ -7,6 +7,37 @@ days!(
     day_01, day_02, day_03, day_04, day_05, day_06, day_07, day_08, day_09, day_10
 );
 
+#[wasm_bindgen(start)]
+fn main_js() {
+    #[cfg(target_arch = "wasm32")]
+    set_panic_hook();
+}
+
+#[cfg(target_arch = "wasm32")]
+fn set_panic_hook() {
+    use std::panic;
+
+    #[wasm_bindgen]
+    extern "C" {
+        #[wasm_bindgen(js_namespace = console)]
+        fn error(msg: String);
+
+        type Error;
+
+        #[wasm_bindgen(constructor)]
+        fn new() -> Error;
+
+        #[wasm_bindgen(structural, method, getter)]
+        fn stack(error: &Error) -> String;
+    }
+
+    fn hook_impl(info: &panic::PanicHookInfo) {
+        let mut msg = info.to_string();
+        error(msg);
+    }
+    panic::set_hook(Box::new(hook_impl));
+}
+
 // WASM Interface. For some reason i cant use strings. So its all wrapped functions.
 #[wasm_bindgen]
 #[derive(Clone, Copy)]
