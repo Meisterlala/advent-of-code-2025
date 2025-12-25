@@ -4,7 +4,10 @@ static EXAMPLE: &str = "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
 [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}";
 
-use std::fmt;
+use std::{
+    collections::{HashSet, VecDeque},
+    fmt,
+};
 
 use nom::{
     IResult, Parser,
@@ -50,32 +53,6 @@ pub fn parse(input: &str) -> IResult<&str, Vec<Machine>> {
     separated_list1(multispace1, machine).parse(input.trim())
 }
 
-fn bfs(machines: Machine, start_state: &[bool], end_state: &[bool]) -> Option<usize> {
-    let mut visited = std::collections::HashSet::new();
-    let mut queue = std::collections::VecDeque::new();
-    queue.push_back((start_state.to_vec(), 0));
-
-    while let Some((current_state, depth)) = queue.pop_front() {
-        if current_state == end_state {
-            return Some(depth);
-        }
-
-        // Generate next states
-        for button in &machines.buttons {
-            let mut next_state = current_state.to_vec();
-            for &index in button {
-                next_state[index] = !next_state[index];
-            }
-
-            // If not visited, add to queue
-            if visited.insert(next_state.clone()) {
-                queue.push_back((next_state, depth + 1));
-            }
-        }
-    }
-    None
-}
-
 pub fn solve_a(input: &str) -> u64 {
     let (_, machines) = parse(input).expect("Failed to parse");
     let total_steps: usize = machines
@@ -83,13 +60,76 @@ pub fn solve_a(input: &str) -> u64 {
         .map(|machine| {
             let start_state = vec![false; machine.lights.len()];
             let end_state = machine.lights.clone();
-            bfs(machine, &start_state, &end_state).expect("No solution found")
+
+            let mut visited = HashSet::new();
+            let mut queue = VecDeque::new();
+            queue.push_back((start_state.to_vec(), 0));
+
+            let mut result = None;
+            while let Some((current_state, depth)) = queue.pop_front() {
+                if current_state == end_state {
+                    result = Some(depth);
+                    break;
+                }
+
+                // Generate next states
+                for button in &machine.buttons {
+                    let mut next_state = current_state.to_vec();
+                    for &index in button {
+                        next_state[index] = !next_state[index];
+                    }
+
+                    // If not visited, add to queue
+                    if visited.insert(next_state.clone()) {
+                        queue.push_back((next_state, depth + 1));
+                    }
+                }
+            }
+            result.expect("No solution found for machine")
         })
         .sum();
     total_steps as u64
 }
 pub fn solve_b(input: &str) -> u64 {
-    todo!()
+    let (_, machines) = parse(input).expect("Failed to parse");
+    let total_steps: usize = machines
+        .into_par_iter()
+        .map(|machine| {
+            let start_state = vec![0; machine.joltage.len()];
+            let end_state = machine.joltage.clone();
+
+            let mut visited = HashSet::new();
+            let mut queue = VecDeque::new();
+            queue.push_back((start_state.to_vec(), 0));
+
+            let mut result = None;
+            while let Some((current_state, depth)) = queue.pop_front() {
+                if current_state == end_state {
+                    result = Some(depth);
+                    break;
+                }
+
+                if depth > 1_000_000 {
+                    panic!("Depth exceeded limit, no solution found");
+                }
+
+                // Generate next states
+                for button in &machine.buttons {
+                    let mut next_state = current_state.to_vec();
+                    for &index in button {
+                        next_state[index] += 1;
+                    }
+
+                    // If not visited, add to queue
+                    if visited.insert(next_state.clone()) {
+                        queue.push_back((next_state, depth + 1));
+                    }
+                }
+            }
+            result.expect("No solution found for machine")
+        })
+        .sum();
+    total_steps as u64
 }
 
 #[cfg(test)]
@@ -125,6 +165,21 @@ mod tests {
 
     #[test]
     fn test_solve_b() {
-        assert_eq!(solve_b(EXAMPLE), 24);
+        assert_eq!(solve_b(EXAMPLE), 33);
+    }
+
+    #[test]
+    fn test_solve_b_parts() {
+        let lines = EXAMPLE.trim().lines().collect::<Vec<_>>();
+        assert_eq!(lines.len(), 3, "Expected 3 lines in example");
+        let solutions = vec![10, 12, 11];
+
+        for (line, sol) in lines.iter().zip(solutions.iter()) {
+            let (remaining, parsed) = parse(line).expect("Failed to parse line");
+            assert!(remaining.is_empty(), "Unparsed input remaining in line");
+            assert_eq!(parsed.len(), 1, "Expected 1 machine per line");
+
+            assert_eq!(solve_b(line), *sol, "Unexpected solution for line");
+        }
     }
 }
