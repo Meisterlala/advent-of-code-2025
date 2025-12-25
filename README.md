@@ -36,7 +36,7 @@ Here are the benchmark results on my machine (AMD Ryzen 7 7700X 8-Core @ 16x 5.6
 | [Day 08: Playground](https://adventofcode.com/2025/day/8)           | :star: :star: | [Code](rust-wasm/src/day_08.rs) | 39.355 ms |   62.698 ms |
 | [Day 09: Movie Theater](https://adventofcode.com/2025/day/9)        | :star: :star: | [Code](rust-wasm/src/day_09.rs) |  6.492 ms |   36.047 ms |
 | [Day 10: Factory](https://adventofcode.com/2025/day/10)             | :star: :star: | [Code](rust-wasm/src/day_10.rs) |  2.437 ms |   12.832 ms |
-| [Day 11: Reactor](https://adventofcode.com/2025/day/11)             | -             | [Code](rust-wasm/src/day_11.rs) |        ms |          ms |
+| [Day 11: Reactor](https://adventofcode.com/2025/day/11)             | :star: :star: | [Code](rust-wasm/src/day_11.rs) |  0.364 ms |    0.450 ms |
 | [Day 12: Christmas Tree Farm](https://adventofcode.com/2025/day/12) | -             | [Code](rust-wasm/src/day_12.rs) |        ms |          ms |
 
 ### How to run the code?

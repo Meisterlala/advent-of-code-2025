@@ -45,6 +45,8 @@ fff: ggg hhh
 ggg: out
 hhh: out";
 
+use std::collections::{HashMap, HashSet};
+
 use nom::{
     IResult, Parser,
     bytes::complete::take_while_m_n,
@@ -78,20 +80,36 @@ fn connections_to_graph(connections: &Vec<(&str, Vec<&str>)>) -> DiGraph<String,
         connections.len(),
         connections[0].1.len() * connections.len(),
     );
+
+    let mut unique_nodes: HashSet<&str> = HashSet::new();
     for connection in connections {
-        let from_index = match graph.node_indices().find(|&i| graph[i] == connection.0) {
-            Some(i) => i,
-            None => graph.add_node(connection.0.to_owned()),
-        };
+        unique_nodes.insert(connection.0);
         for &to in &connection.1 {
-            // Avoid adding duplicate nodes
-            let to_index = match graph.node_indices().find(|&i| graph[i] == to) {
-                Some(i) => i,
-                None => graph.add_node(to.to_owned()),
-            };
-            graph.add_edge(from_index, to_index, ());
+            unique_nodes.insert(to);
         }
     }
+
+    // Build graph + node map in one iterator pass
+    let nodes: HashMap<&str, _> = unique_nodes
+        .iter()
+        .copied()
+        .map(|s| (s, graph.add_node(s.to_owned())))
+        .collect();
+
+    // Add all edges in iterator style
+    graph.extend_with_edges(
+        connections
+            .iter()
+            .flat_map(|connection| connection.1.iter().map(move |&to| (connection.0, to)))
+            .map(|(from, to)| {
+                (
+                    *nodes.get(from).unwrap(), // Safe: all nodes pre-added
+                    *nodes.get(to).unwrap(),
+                    (),
+                )
+            }),
+    );
+
     graph
 }
 

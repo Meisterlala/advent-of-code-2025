@@ -35,7 +35,7 @@ fn get_input(day: u32) -> String {
         8 => include_str!("../inputs/day08"),
         9 => include_str!("../inputs/day09"),
         10 => include_str!("../inputs/day10"),
-        // 11 => include_str!("../inputs/day11"),
+        11 => include_str!("../inputs/day11"),
         // 12 => include_str!("../inputs/day12"),
         _ => {
             panic!("Input for day {} not found", day);
