@@ -24,20 +24,20 @@ This Year i decided try out WebAssembly. I wrote a frontend website in Angular, 
 
 Here are the benchmark results on my machine (AMD Ryzen 7 7700X 8-Core @ 16x 5.6Ghz). Both running natively and running as WebAssembly in Chrome:
 
-| Day                                                                 | Stars         |         Code          |    Native | WebAssembly |
-| :------------------------------------------------------------------ | :------------ | :-------------------: | --------: | ----------: |
-| [Day 01: Secret Entrance](https://adventofcode.com/2025/day/1)      | :star: :star: | [Code](src/day_01.rs) |  0.077 ms |    0.129 ms |
-| [Day 02: Gift Shop](https://adventofcode.com/2025/day/2)            | :star: :star: | [Code](src/day_02.rs) |  0.152 ms |    0.802 ms |
-| [Day 03: Lobby](https://adventofcode.com/2025/day/3)                | :star: :star: | [Code](src/day_03.rs) |  0.448 ms |    0.516 ms |
-| [Day 04: Printing Department](https://adventofcode.com/2025/day/4)  | :star: :star: | [Code](src/day_04.rs) |  2.610 ms |    4.854 ms |
-| [Day 05: Cafeteria](https://adventofcode.com/2025/day/5)            | :star: :star: | [Code](src/day_05.rs) |  0.103 ms |    0.214 ms |
-| [Day 06: Trash Compactor](https://adventofcode.com/2025/day/6)      | :star: :star: | [Code](src/day_06.rs) |  0.065 ms |    0.154 ms |
-| [Day 07: Laboratories](https://adventofcode.com/2025/day/7)         | :star: :star: | [Code](src/day_07.rs) |  0.025 ms |    0.028 ms |
-| [Day 08: Playground](https://adventofcode.com/2025/day/8)           | :star: :star: | [Code](src/day_08.rs) | 39.355 ms |   62.698 ms |
-| [Day 09: Movie Theater](https://adventofcode.com/2025/day/9)        | :star: :star: | [Code](src/day_09.rs) |  6.492 ms |   36.047 ms |
-| [Day 10: Factory](https://adventofcode.com/2025/day/10)             | :star: :star: | [Code](src/day_10.rs) |  2.437 ms |   12.832 ms |
-| [Day 11: Reactor](https://adventofcode.com/2025/day/11)             | -             | [Code](src/day_11.rs) |        ms |          ms |
-| [Day 12: Christmas Tree Farm](https://adventofcode.com/2025/day/12) | -             | [Code](src/day_12.rs) |        ms |          ms |
+| Day                                                                 | Stars         |              Code               |    Native | WebAssembly |
+| :------------------------------------------------------------------ | :------------ | :-----------------------------: | --------: | ----------: |
+| [Day 01: Secret Entrance](https://adventofcode.com/2025/day/1)      | :star: :star: | [Code](rust-wasm/src/day_01.rs) |  0.077 ms |    0.129 ms |
+| [Day 02: Gift Shop](https://adventofcode.com/2025/day/2)            | :star: :star: | [Code](rust-wasm/src/day_02.rs) |  0.152 ms |    0.802 ms |
+| [Day 03: Lobby](https://adventofcode.com/2025/day/3)                | :star: :star: | [Code](rust-wasm/src/day_03.rs) |  0.448 ms |    0.516 ms |
+| [Day 04: Printing Department](https://adventofcode.com/2025/day/4)  | :star: :star: | [Code](rust-wasm/src/day_04.rs) |  2.610 ms |    4.854 ms |
+| [Day 05: Cafeteria](https://adventofcode.com/2025/day/5)            | :star: :star: | [Code](rust-wasm/src/day_05.rs) |  0.103 ms |    0.214 ms |
+| [Day 06: Trash Compactor](https://adventofcode.com/2025/day/6)      | :star: :star: | [Code](rust-wasm/src/day_06.rs) |  0.065 ms |    0.154 ms |
+| [Day 07: Laboratories](https://adventofcode.com/2025/day/7)         | :star: :star: | [Code](rust-wasm/src/day_07.rs) |  0.025 ms |    0.028 ms |
+| [Day 08: Playground](https://adventofcode.com/2025/day/8)           | :star: :star: | [Code](rust-wasm/src/day_08.rs) | 39.355 ms |   62.698 ms |
+| [Day 09: Movie Theater](https://adventofcode.com/2025/day/9)        | :star: :star: | [Code](rust-wasm/src/day_09.rs) |  6.492 ms |   36.047 ms |
+| [Day 10: Factory](https://adventofcode.com/2025/day/10)             | :star: :star: | [Code](rust-wasm/src/day_10.rs) |  2.437 ms |   12.832 ms |
+| [Day 11: Reactor](https://adventofcode.com/2025/day/11)             | -             | [Code](rust-wasm/src/day_11.rs) |        ms |          ms |
+| [Day 12: Christmas Tree Farm](https://adventofcode.com/2025/day/12) | -             | [Code](rust-wasm/src/day_12.rs) |        ms |          ms |
 
 ### How to run the code?
 
@@ -73,7 +73,7 @@ cargo run --release
 cargo run --release -- day01
 ```
 
-For [Day 10](./rust-wasm/src/day_10.rs) there is an alternative solver implemented. Its based on the [Z3 Theorem Prover](https://github.com/Z3Prover/z3) and not available for WebAssembly. You can use it by enabling the `z3` feature flag:
+For [Day 10](rust-wasm/src/day_10.rs) there is an alternative solver implemented. Its based on the [Z3 Theorem Prover](https://github.com/Z3Prover/z3) and not available for WebAssembly. You can use it by enabling the `z3` feature flag:
 
 ```sh
 cd rust-wasm
