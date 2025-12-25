@@ -42,6 +42,14 @@ a:focus {
 
 .day-summary .katex {
   color: #dddd66;
+  object-fit: contain;
+  max-width: 100%;
+}
+
+.day-summary .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
 }
 
 .day-summary div#day11_example {
@@ -71,6 +79,8 @@ a:focus {
 .day-summary img#day11_a,
 .day-summary img#day11_b {
   max-height: 400px;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .expanded .day-summary img#day11_a,
