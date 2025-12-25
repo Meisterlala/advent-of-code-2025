@@ -28,7 +28,7 @@ dotenv = "0.15.0"
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 z3 = { version = "0.19.6", features = ["bundled"] }
 
-[dev-dependencies]
+[target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 criterion = "0.8.0"
 
 [[bench]]
