@@ -18,7 +18,7 @@ You can view my solution online!
 
 ## How did i solve the puzzles?
 
-This Year i decided try out WebAssembly. I wrote a frontend website in Angular, where you can more easily run the code and get the solutions. But all the actual algorithms and logic are implemented in Rust and compiled. This allows me to write high-performance code in Rust, while still being able to use the powerful features of Angular for the user interface.
+This Year i decided try out WebAssembly. I wrote a frontend website in [Angular](https://angular.dev), where you can more easily run the code and get the solutions. But all the actual algorithms and logic are implemented in Rust and compiled. This allows me to write high-performance code in Rust, while still being able to use the powerful features of Angular for the user interface.
 
 ### Is it fast?
 
