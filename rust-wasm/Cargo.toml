@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 authors = ["Meisterlala"]
 description = "Advent of Code 2025 solutions in Rust with WASM support"
+repository = "https://github.com/Meisterlala/advent-of-code-2025"
 
 [features]
 default = ["good_lp"]
