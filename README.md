@@ -56,6 +56,14 @@ cargo run --release
 cargo run --release -- day01
 ```
 
+For [Day 10](./rust-wasm/src/day_10.rs) there is an alternative solver implemented. Its based on the [Z3 Theorem Prover](https://github.com/Z3Prover/z3) and not available for WebAssembly. You can use it by enabling the `z3` feature flag:
+
+```sh
+cd rust-wasm
+# Run day 10 with the z3 solver
+cargo run --release --features z3 -- day10
+```
+
 #### How to benchmark the code?
 
 You can benchmark the performance of the code using the following commands:

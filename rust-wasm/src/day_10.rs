@@ -1,7 +1,7 @@
 crate::solution!(
     10,
     "Factory",
-    r#"For Part 1, it's a simple <a href="https://en.wikipedia.org/wiki/Depth-first_search">Depth-first search</a>. For Part 2, I'm using the <a href="https://github.com/Z3Prover/z3">Z3 Theorem Prover</a> to set constraints and find the minimum. Sadly, this is not available for WebAssembly, so it can't run here on the website. <br><br>
+    r#"For Part 1, it's a simple <a href="https://en.wikipedia.org/wiki/Depth-first_search">Depth-first search</a>. For Part 2, I'm using the <a href="https://github.com/Z3Prover/z3">Z3 Theorem Prover</a> to set constraints and find the minimum. Sadly, this is not available for WebAssembly, so it can't run here on the website. So I also implemented another solution.<br><br>
 
 The problem can be rewritten as a set of linear equations that can be solved.  
 For the first machine in the example input, with the buttons $b_0,b_1,b_2,b_3,b_4,b_5$ and target joltages $3,5,4,7$:<br>
@@ -15,7 +15,7 @@ b_i &\geq 0
 \min(\sum_{i=0}^{5} b_i )
 $$<br>
 
-Sadly, this is not easily solvable with <a href="https://en.wikipedia.org/wiki/Gaussian_elimination">Gaussian elimination</a> because there remain free variables. It's actually an <a href="https://en.wikipedia.org/wiki/Integer_programming">Integer Programming</a> problem, which is <a href="https://en.wikipedia.org/wiki/NP-hardness">NP-hard</a>. But we can solve it with the <a href="https://en.wikipedia.org/wiki/Simplex_algorithm">Simplex algorithm</a>
+Sadly, this is not easily solvable with <a href="https://en.wikipedia.org/wiki/Gaussian_elimination">Gaussian elimination</a> because there remain free variables. It's actually an <a href="https://en.wikipedia.org/wiki/Integer_programming">Integer Programming</a> problem, which is <a href="https://en.wikipedia.org/wiki/NP-hardness">NP-hard</a>. But we can solve it with the <a href="https://en.wikipedia.org/wiki/Simplex_algorithm">Simplex algorithm</a> that is implemented in the <a href="https://crates.io/crates/good_lp">good_lp</a> crate.
 "#,
     &EXAMPLE,
     solve_a,
@@ -27,11 +27,6 @@ static EXAMPLE: &str = "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}";
 
 use std::collections::{HashSet, VecDeque};
-
-#[cfg(not(target_arch = "wasm32"))]
-use ndarray::prelude::*;
-#[cfg(not(target_arch = "wasm32"))]
-use z3::{ast::Int, *};
 
 use nom::{
     IResult, Parser,
@@ -115,13 +110,67 @@ pub fn solve_a(input: &str) -> u64 {
     total_steps as u64
 }
 
-#[cfg(target_arch = "wasm32")]
-pub fn solve_b(input: &str) -> &str {
-    "Part 2 not supported in WASM build. Because Z3 is not available."
+#[cfg(all(feature = "good_lp", not(feature = "z3")))]
+pub fn solve_b(input: &str) -> u64 {
+    use good_lp::{
+        Expression, Solution, SolverModel, solvers::microlp::microlp, variable, variables,
+    };
+
+    let (_, machines) = parse(input).expect("Failed to parse");
+
+    machines
+        .into_par_iter()
+        .map(|machine| {
+            let mut problem = variables!();
+
+            // Button press variables
+            let button_vars: Vec<_> = (0..machine.buttons.len())
+                .map(|_| problem.add(variable().min(0)))
+                .collect();
+
+            // Joltage constraints
+            let joltage_constraints: Vec<_> = machine
+                .joltage
+                .iter()
+                .enumerate()
+                .map(|(j, &joltage)| {
+                    let mut sum = Expression::from(0);
+
+                    for b in 0..machine.buttons.len() {
+                        if machine.buttons[b].contains(&j) {
+                            sum = sum + &button_vars[b];
+                        }
+                    }
+                    sum.eq(joltage as u32)
+                })
+                .collect();
+
+            // Objective: Minimize total button presses
+            let objective = button_vars
+                .iter()
+                .fold(good_lp::Expression::from(0), |acc, b| acc + b);
+
+            // Solve
+            let solution = problem
+                .minimise(objective)
+                .using(microlp)
+                .with_all(joltage_constraints)
+                .solve()
+                .expect("Failed to solve Machine");
+
+            // Sum button presses
+            button_vars
+                .iter()
+                .map(|b| solution.value(*b) as u64)
+                .sum::<u64>()
+        })
+        .sum()
 }
 
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(all(feature = "z3", not(target_arch = "wasm32")))]
 pub fn solve_b(input: &str) -> u64 {
+    use z3::{Optimize, SatResult, ast::Int};
+
     let (_, machines) = parse(input).expect("Failed to parse");
 
     machines
@@ -198,13 +247,11 @@ mod tests {
         }
     }
 
-    #[cfg(not(target_arch = "wasm32"))]
     #[test]
     fn test_solve_b() {
         assert_eq!(solve_b(EXAMPLE), 33);
     }
 
-    #[cfg(not(target_arch = "wasm32"))]
     #[test]
     fn test_solve_b_parts() {
         let lines = EXAMPLE.trim().lines().collect::<Vec<_>>();
