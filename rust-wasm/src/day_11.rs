@@ -1,241 +1,187 @@
 crate::solution!(
     11,
     "Reactor",
-    r#"This is best solved with the <a href="https://en.wikipedia.org/wiki/Point_in_polygon">Point in Polygon algorithm</a> for the general case. However, that approach is slow, so we can optimize and specialize it by checking if a line intersects an area and considering it invalid. This only works for axis-aligned polygon edges, but that's all we need for the puzzle input.
-"#,
+    r#"This is a classic <a href="https://en.wikipedia.org/wiki/Graph_theory">graph theory</a>
+    problem. I model this as a <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">DAG</a> and iterate over it in topological order while keeping track of connected nodes.
+
+    For Part 2, we can break down the problem into two distinct paths that can be combined:
+    $$\begin{align*}
+        \text{svr} \rightarrow \text{dac} \rightarrow \text{fft} \rightarrow \text{out} \\
+        \text{svr} \rightarrow \text{fft} \rightarrow \text{dac} \rightarrow \text{out}
+    \end{align*} $$
+
+    <div id="day11_example">
+    <div class="label"><img src="day11_a.png" alt="Day 11 Part 1" id="day11_a"><span class="alt">Part 1</span></div>
+    <div class="label"><img src="day11_b.png" alt="Day 11 Part 2" id="day11_b"><span class="alt">Part 2</span></div>
+    </div>
+    Technically the second path is not needed and could be removed. Because the input data doesn't have a connection $\text{dac} \rightarrow \text{fft}$.<br><a href="day11.png">You can see the full graph here</a>."#,
     &EXAMPLE,
     solve_a,
     solve_b
 );
 
-static EXAMPLE: &str = "7,1
-11,1
-11,7
-9,7
-9,5
-2,5
-2,3
-7,3";
+static EXAMPLE: &str = "aaa: you hhh
+you: bbb ccc
+bbb: ddd eee
+ccc: ddd eee fff
+ddd: ggg
+eee: out
+fff: out
+ggg: out
+hhh: ccc fff iii
+iii: out";
 
-use std::fmt;
+static EXAMPLE_B: &str = "svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out";
 
 use nom::{
     IResult, Parser,
-    character::complete::{self, char},
+    bytes::complete::take_while_m_n,
+    character::complete::{char, multispace1, space0, space1},
     multi::separated_list1,
 };
 
+use petgraph::{
+    dot::{Config, Dot},
+    graph::DiGraph,
+    visit::Topo,
+};
 use rayon::prelude::*;
 
-pub fn parse(input: &str) -> IResult<&str, Vec<(u64, u64)>> {
-    let tile = ((complete::u64, char(','), complete::u64)).map(|(x, _, y): (u64, _, u64)| (x, y));
-    let (rest, tiles) = separated_list1(complete::line_ending, tile).parse(input.trim())?;
+pub fn parse(input: &str) -> IResult<&str, Vec<(&str, Vec<&str>)>> {
+    let device = || take_while_m_n(3, 3, |c: char| c.is_ascii_alphabetic());
+    let connection = (
+        device(),
+        (char(':'), space0),
+        separated_list1(space1, device()),
+    )
+        .map(|(from, _, tos)| (from, tos));
+    let (rest, connections) = separated_list1(multispace1, connection).parse(input.trim())?;
     debug_assert!(rest.is_empty(), "Unparsed input remaining");
-    Ok((rest, tiles))
+    debug_assert!(connections.len() > 1,);
+    Ok((rest, connections))
+}
+
+fn connections_to_graph(connections: &Vec<(&str, Vec<&str>)>) -> DiGraph<String, ()> {
+    let mut graph = DiGraph::<_, ()>::with_capacity(
+        connections.len(),
+        connections[0].1.len() * connections.len(),
+    );
+    for connection in connections {
+        let from_index = match graph.node_indices().find(|&i| graph[i] == connection.0) {
+            Some(i) => i,
+            None => graph.add_node(connection.0.to_owned()),
+        };
+        for &to in &connection.1 {
+            // Avoid adding duplicate nodes
+            let to_index = match graph.node_indices().find(|&i| graph[i] == to) {
+                Some(i) => i,
+                None => graph.add_node(to.to_owned()),
+            };
+            graph.add_edge(from_index, to_index, ());
+        }
+    }
+    graph
 }
 
 pub fn solve_a(input: &str) -> u64 {
-    let (_, tiles) = parse(input).expect("Failed to parse tiles");
-    // print_tiles(&tiles);
+    let (_, connections) = parse(input).expect("Failed to parse");
+    let graph = connections_to_graph(&connections);
+    connections_between(&graph, "you", "out")
+}
 
-    // index x, index y, area
-    let mut max: Option<(usize, usize, u64)> = None;
-    for x_i in 0..tiles.len() {
-        for y_i in x_i + 1..tiles.len() {
-            let (x, y) = (tiles[x_i], tiles[y_i]);
-            let area = (x.0.abs_diff(y.0) + 1) * (x.1.abs_diff(y.1) + 1);
-            if let Some((_, _, max_area)) = max {
-                if area > max_area {
-                    max = Some((x_i, y_i, area));
+#[allow(dead_code)]
+fn save_dot(graph: &DiGraph<String, ()>, path: &str) {
+    use std::fs::File;
+    use std::io::Write;
+
+    let fancy_dot = Dot::with_attr_getters(
+        &graph,
+        &[Config::EdgeNoLabel, Config::NodeNoLabel],
+        &|_graph_reference, _edge_reference| String::new(),
+        // Node attribute getter; We don't change any node attributes
+        &|_, (_, label)| {
+            let deco = match label.as_str() {
+                "you" | "svr" => {
+                    String::from(r#", shape = "box", style = "filled", fillcolor = "green""#)
                 }
-            } else {
-                max = Some((x_i, y_i, area));
-            }
-        }
-    }
-    assert!(max.is_some(), "No maximum area found");
-    let max = max.unwrap();
-    // let (max_x, max_y) = (tiles[max.0], tiles[max.1]);
-    max.2
-}
-
-#[derive(Debug, Clone, Copy)]
-struct AreaPair {
-    x_index: usize,
-    y_index: usize,
-    area: u64,
-}
-
-impl AreaPair {
-    fn print<T>(&self, tiles: &[(T, T)])
-    where
-        T: fmt::Display,
-    {
-        let (x, y) = (&tiles[self.x_index], &tiles[self.y_index]);
-        println!(
-            "({:3},{:3}) | ({:3},{:3}) | {:5}",
-            x.0, x.1, y.0, y.1, self.area
-        );
-    }
-}
-
-#[allow(dead_code)]
-fn print_areas<T>(areas: &Vec<AreaPair>, tiles: &[(T, T)])
-where
-    T: fmt::Display,
-{
-    if areas.len() > 0 {
-        println!("--  X  -- | --  Y  -- |  Area");
-    }
-    for area in areas {
-        area.print(tiles);
-    }
-}
-
-#[allow(dead_code)]
-fn print_tiles(tiles: &Vec<(u64, u64)>) {
-    let max_x = tiles.iter().map(|&(x, _)| x).max().unwrap();
-    let max_y = tiles.iter().map(|&(_, y)| y).max().unwrap();
-
-    for y in 0..=max_y {
-        for x in 0..=max_x {
-            if tiles.contains(&(x, y)) {
-                print!("#");
-            } else {
-                print!(".");
-            }
-        }
-        println!();
-    }
-}
-
-#[allow(dead_code)]
-fn print_tiles_green<T>(tiles: &Vec<(T, T)>)
-where
-    T: Into<i128> + Copy,
-{
-    let tiles: Vec<(i128, i128)> = tiles.iter().map(|&(x, y)| (x.into(), y.into())).collect();
-    let max_x = tiles.iter().map(|&(x, _)| x).max().unwrap();
-    let max_y = tiles.iter().map(|&(_, y)| y).max().unwrap();
-
-    // Create lines from tiles
-    let mut lines: Vec<((i128, i128), (i128, i128))> = Vec::with_capacity(tiles.len());
-    for i in 0..tiles.len() {
-        let next = (i + 1) % tiles.len();
-        let start = (tiles[i].0 as i128, tiles[i].1 as i128);
-        let end = (tiles[next].0 as i128, tiles[next].1 as i128);
-        lines.push((start, end));
-    }
-
-    for y in 0..=max_y {
-        for x in 0..=max_x {
-            if tiles.contains(&(x, y)) {
-                print!("#");
-            } else if line_intersects_rect(&((x, y), (x, y)), &lines) {
-                print!("X");
-            } else {
-                print!(".");
-            }
-        }
-        println!();
-    }
+                "out" => String::from(r#", shape = "box", style = "filled", fillcolor = "red""#),
+                "dac" | "fft" => String::from(
+                    r#", shape = "diamond", style = "filled", fillcolor = "lightblue""#,
+                ),
+                _ => String::new(),
+            };
+            format!(r#"label = "{}"{}"#, label, deco)
+        },
+    );
+    let mut file = File::create(path).expect("Unable to create file");
+    write!(file, "{:?}", fancy_dot).expect("Unable to write data");
 }
 
 pub fn solve_b(input: &str) -> u64 {
-    let (_, tiles) = parse(input).expect("Failed to parse tiles");
-    // print_tiles_green(&tiles);
+    // Hack, so that example B can be tested with solve_a
+    let inp = if input.trim() == EXAMPLE.trim() {
+        EXAMPLE_B
+    } else {
+        input.trim()
+    };
+    let (_, connections) = parse(inp).expect("Failed to parse");
+    let graph = connections_to_graph(&connections);
 
-    // Calculate all areas
-    let mut areas: Vec<AreaPair> = Vec::with_capacity(tiles.len() * (tiles.len() - 1) / 2);
-    for x_i in 0..tiles.len() {
-        for y_i in x_i + 1..tiles.len() {
-            let (x, y) = (tiles[x_i], tiles[y_i]);
-            let area = (x.0.abs_diff(y.0) + 1) * (x.1.abs_diff(y.1) + 1);
-            areas.push(AreaPair {
-                x_index: x_i,
-                y_index: y_i,
-                area,
-            });
-        }
-    }
-    // Sort areas descending
-    areas.sort_unstable_by(|a, b| b.area.cmp(&a.area));
-
-    // Create lines from tiles
-    let mut lines: Vec<((i128, i128), (i128, i128))> = Vec::with_capacity(tiles.len());
-    for i in 0..tiles.len() {
-        let next = (i + 1) % tiles.len();
-        let start = (tiles[i].0 as i128, tiles[i].1 as i128);
-        let end = (tiles[next].0 as i128, tiles[next].1 as i128);
-        lines.push((start, end));
-    }
-
-    // Convert to i128
-    let tiles: Vec<(i128, i128)> = tiles.iter().map(|&(x, y)| (x as i128, y as i128)).collect();
-
-    // For each area, check if all sided are green
-    let max = areas
-        .into_par_iter()
-        .find_first(|area| {
-            let (x, y) = (tiles[area.x_index], tiles[area.y_index]);
-
-            let (min_x, max_x) = if x.0 < y.0 { (x.0, y.0) } else { (y.0, x.0) };
-            let (min_y, max_y) = if x.1 < y.1 { (x.1, y.1) } else { (y.1, x.1) };
-
-            !line_intersects_rect(&((min_x + 1, min_y + 1), (max_x - 1, max_y - 1)), &lines)
-        })
-        .unwrap_or_else(|| {
-            panic!("No valid area found");
-        });
-    return max.area;
-}
-
-fn line_intersects_rect(
-    rect: &((i128, i128), (i128, i128)),
-    lines: &[((i128, i128), (i128, i128))],
-) -> bool {
-    let ((rx1, ry1), (rx2, ry2)) = rect;
-
-    let rect_lines = vec![
-        ((*rx1, *ry1), (*rx2, *ry1)), // top
-        ((*rx2, *ry1), (*rx2, *ry2)), // right
-        ((*rx2, *ry2), (*rx1, *ry2)), // bottom
-        ((*rx1, *ry2), (*rx1, *ry1)), // left
+    let routes = [
+        [("svr", "dac"), ("dac", "fft"), ("fft", "out")],
+        [("svr", "fft"), ("fft", "dac"), ("dac", "out")],
     ];
 
-    for line in lines {
-        for rect_line in &rect_lines {
-            if lines_intersect(line, rect_line) {
-                return true;
-            }
-        }
-    }
-
-    false
+    routes
+        .into_par_iter()
+        .map(|route| {
+            route
+                .into_par_iter()
+                .map(|(from, to)| connections_between(&graph, from, to))
+                .product::<u64>()
+        })
+        .sum::<u64>()
 }
 
-/// Check if two lines intersect, only for straight lines
-fn lines_intersect(
-    line1: &((i128, i128), (i128, i128)),
-    line2: &((i128, i128), (i128, i128)),
-) -> bool {
-    let ((x1, y1), (x2, y2)) = line1;
-    let ((x3, y3), (x4, y4)) = line2;
+fn connections_between(graph: &DiGraph<String, ()>, from: &str, to: &str) -> u64 {
+    let mut connection_map = vec![0u64; graph.node_count()];
 
-    // Check if lines are vertical or horizontal
-    let line1_vertical = x1 == x2;
-    let line1_horizontal = y1 == y2;
-    let line2_vertical = x3 == x4;
-    let line2_horizontal = y3 == y4;
+    let from_index = graph
+        .node_indices()
+        .find(|&i| graph[i] == from)
+        .expect(&format!("No '{}' node found", from));
 
-    if line1_vertical && line2_horizontal {
-        // line1 is vertical, line2 is horizontal
-        return x1 >= x3.min(x4) && x1 <= x3.max(x4) && y3 >= y1.min(y2) && y3 <= y1.max(y2);
-    } else if line1_horizontal && line2_vertical {
-        // line1 is horizontal, line2 is vertical
-        return x3 >= x1.min(x2) && x3 <= x1.max(x2) && y1 >= y3.min(y4) && y1 <= y3.max(y4);
+    let to_index = graph
+        .node_indices()
+        .find(|&i| graph[i] == to)
+        .expect(&format!("No '{}' node found", to));
+
+    // Set 'from' node to 1
+    connection_map[from_index.index()] = 1;
+
+    // Traverse in graph
+    let mut topo = Topo::new(&graph);
+    while let Some(node_index) = topo.next(&graph) {
+        let paths_to_node: u64 = graph
+            .neighbors_directed(node_index, petgraph::Incoming)
+            .map(|neighbor| connection_map[neighbor.index()])
+            .sum();
+        connection_map[node_index.index()] += paths_to_node;
     }
-    false
+
+    connection_map[to_index.index()]
 }
 
 #[cfg(test)]
@@ -246,28 +192,30 @@ mod tests {
     fn test_parse_a() {
         let (remaining, parsed) = parse(EXAMPLE).expect("Failed to parse");
         assert!(remaining.is_empty(), "Unparsed input remaining");
-        assert_eq!(
-            parsed,
-            vec![
-                (7, 1),
-                (11, 1),
-                (11, 7),
-                (9, 7),
-                (9, 5),
-                (2, 5),
-                (2, 3),
-                (7, 3),
-            ]
-        );
+        assert_eq!(parsed.len(), 10);
+        assert_eq!(parsed[0].0, "aaa");
+        assert_eq!(parsed[0].1, vec!["you", "hhh"]);
     }
 
     #[test]
     fn test_solve_a() {
-        assert_eq!(solve_a(EXAMPLE), 50);
+        assert_eq!(solve_a(EXAMPLE), 5);
     }
 
     #[test]
     fn test_solve_b() {
-        assert_eq!(solve_b(EXAMPLE), 24);
+        assert_eq!(solve_b(EXAMPLE), 2);
+    }
+
+    #[ignore]
+    #[test]
+    fn test_print_graphs() {
+        let (_, connections) = parse(EXAMPLE).expect("Failed to parse");
+        let graph = connections_to_graph(&connections);
+        save_dot(&graph, "day11_a.dot");
+
+        let (_, connections_b) = parse(EXAMPLE_B).expect("Failed to parse");
+        let graph_b = connections_to_graph(&connections_b);
+        save_dot(&graph_b, "day11_b.dot");
     }
 }

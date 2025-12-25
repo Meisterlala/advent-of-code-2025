@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 
 // Specify all days here
 days!(
-    day_01, day_02, day_03, day_04, day_05, day_06, day_07, day_08, day_09, day_10
+    day_01, day_02, day_03, day_04, day_05, day_06, day_07, day_08, day_09, day_10, day_11,
 );
 
 #[wasm_bindgen(start)]
@@ -32,8 +32,7 @@ fn set_panic_hook() {
     }
 
     fn hook_impl(info: &panic::PanicHookInfo) {
-        let mut msg = info.to_string();
-        error(msg);
+        error(info.to_string());
     }
     panic::set_hook(Box::new(hook_impl));
 }

@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <div class="day-content">
+  <div class="day-content" [class.expanded]="expanded()">
     <div class="day-summary" (click)="toggle()">
       <p>
         @if (this.isComplete) {
