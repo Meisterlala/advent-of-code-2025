@@ -1,4 +1,26 @@
-crate::solution!(10, "Factory", r#""#, &EXAMPLE, solve_a, solve_b);
+crate::solution!(
+    10,
+    "Factory",
+    r#"For Part 1, it's a simple <a href="https://en.wikipedia.org/wiki/Depth-first_search">Depth-first search</a>. For Part 2, I'm using the <a href="https://github.com/Z3Prover/z3">Z3 Theorem Prover</a> to set constraints and find the minimum. Sadly, this is not available for WebAssembly, so it can't run here on the website. <br><br>
+
+The problem can be rewritten as a set of linear equations that can be solved.  
+For the first machine in the example input, with the buttons $b_0,b_1,b_2,b_3,b_4,b_5$ and target joltages $3,5,4,7$:<br>
+$$\begin{cases}
+b_4 + b_5 &= 3 \\
+b_1 + b_5 &= 5 \\
+b_2 + b_3 + b_4 &= 4 \\
+b_0 + b_1 + b_3 &= 7 \\
+b_i &\geq 0 
+\end{cases} \quad \quad \quad
+\min(\sum_{i=0}^{5} b_i )
+$$<br>
+
+Sadly, this is not easily solvable with <a href="https://en.wikipedia.org/wiki/Gaussian_elimination">Gaussian elimination</a> because there remain free variables. It's actually an <a href="https://en.wikipedia.org/wiki/Integer_programming">Integer Programming</a> problem, which is <a href="https://en.wikipedia.org/wiki/NP-hardness">NP-hard</a>. But we can solve it with the <a href="https://en.wikipedia.org/wiki/Simplex_algorithm">Simplex algorithm</a>
+"#,
+    &EXAMPLE,
+    solve_a,
+    solve_b
+);
 
 static EXAMPLE: &str = "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
@@ -7,9 +29,10 @@ static EXAMPLE: &str = "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 use std::collections::{HashSet, VecDeque};
 
 #[cfg(not(target_arch = "wasm32"))]
+use ndarray::prelude::*;
+#[cfg(not(target_arch = "wasm32"))]
 use z3::{ast::Int, *};
 
-use ndarray::prelude::*;
 use nom::{
     IResult, Parser,
     branch::alt,

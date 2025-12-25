@@ -1,7 +1,8 @@
 crate::solution!(
     9,
     "Movie Theater",
-    r#"For Part 2 I'm checking if a line intersects the area and consider it invalid."#,
+    r#"This is best solved with the <a href="https://en.wikipedia.org/wiki/Point_in_polygon">Point in Polygon algorithm</a> for the general case. However, that approach is slow, so we can optimize and specialize it by checking if a line intersects an area and considering it invalid. This only works for axis-aligned polygon edges, but that's all we need for the puzzle input.
+"#,
     &EXAMPLE,
     solve_a,
     solve_b
