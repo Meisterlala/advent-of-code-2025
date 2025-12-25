@@ -1,6 +1,4 @@
-use std::{fs::OpenOptions, path::Path};
-
-use reqwest::blocking::Client;
+use std::path::Path;
 
 #[allow(dead_code)]
 pub fn check_if_present(day: u32) -> bool {
@@ -15,6 +13,9 @@ pub fn read_input(day: u32) -> Result<String, String> {
 #[cfg(not(target_arch = "wasm32"))]
 #[allow(dead_code)]
 pub fn download_input(day: u32) -> Result<(), String> {
+    use reqwest::blocking::Client;
+    use std::fs::OpenOptions;
+
     // Load session cookie from .env file
     dotenv::dotenv().ok();
     let cookie = std::env::var("AOC_SESSION")
@@ -55,4 +56,10 @@ pub fn download_input(day: u32) -> Result<(), String> {
         .map_err(|e| format!("Failed to write input file: {}", e))?;
 
     Ok(())
+}
+
+#[cfg(target_arch = "wasm32")]
+#[allow(dead_code)]
+pub fn download_input(_: u32) -> Result<(), String> {
+    panic!("Downloading input not supported in wasm32 target");
 }

@@ -35,11 +35,20 @@ good_lp = { version = "1.14.1", features = ["microlp"], default-features = false
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 z3 = { version = "0.19.6", features = ["bundled"] , optional = true }
 
+# Criterion for benchmarking, disable Rayon in WASM builds
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
 criterion = "0.8.0"
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+criterion = {version = "0.8.0", default-features = false }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.56"
 
 [[bench]]
 name = "all_days"
+harness = false
+[[bench]]
+name = "wasm"
 harness = false
 
 [[bin]]
