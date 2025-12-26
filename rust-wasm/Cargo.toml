@@ -48,10 +48,6 @@ criterion = {version = "0.8.0", default-features = false }
 [dev-dependencies]
 wasm-bindgen-test = "0.3.56"
 
-# Configuration for running tests in WASM
-[target.wasm32-unknown-unknown]
-runner = "wasm-server-runner"
-
 [[bench]]
 name = "all_days"
 harness = false
