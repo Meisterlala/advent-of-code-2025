@@ -76,8 +76,8 @@ importers:
         specifier: ~5.1.0
         version: 5.1.0(karma@6.4.4)
       karma-jasmine-html-reporter:
-        specifier: ~2.1.0
-        version: 2.1.0(jasmine-core@5.13.0)(karma-jasmine@5.1.0(karma@6.4.4))(karma@6.4.4)
+        specifier: ~2.2.0
+        version: 2.2.0(jasmine-core@5.13.0)(karma-jasmine@5.1.0(karma@6.4.4))(karma@6.4.4)
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -1992,7 +1992,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
@@ -2220,10 +2220,10 @@ packages:
     resolution: {integrity: sha512-yj7hbequkQP2qOSb20GuNSIyE//PgJWHwC2IydLE6XRtsnaflv+/OSGNssPjobYUlhVVagy99TQpqUt3vAUG7A==}
     engines: {node: '>=10.0.0'}
 
-  karma-jasmine-html-reporter@2.1.0:
-    resolution: {integrity: sha512-sPQE1+nlsn6Hwb5t+HHwyy0A1FNCVKuL1192b+XNauMYWThz2kweiBVW1DqloRpVvZIJkIoHVB7XRpK78n1xbQ==}
+  karma-jasmine-html-reporter@2.2.0:
+    resolution: {integrity: sha512-J0laEC43Oy2RdR5V5R3bqmdo7yRIYySq6XHKbA+e5iSAgLjhR1oICLGeSREPlJXpeyNcdJf3J17YcdhD0mRssQ==}
     peerDependencies:
-      jasmine-core: ^4.0.0 || ^5.0.0
+      jasmine-core: ^4.0.0 || ^5.0.0 || ^6.0.0
       karma: ^6.0.0
       karma-jasmine: ^5.0.0
 
@@ -2886,6 +2886,7 @@ packages:
   tar@7.5.2:
     resolution: {integrity: sha512-7NyxrTE4Anh8km8iEy7o0QYPs+0JKBTj5ZaqHg6B39erLg0qYXN3BijtShwbsNSvQ+LN75+KV+C4QR/f6Gwnpg==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   tinyglobby@0.2.15:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
@@ -5206,7 +5207,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  karma-jasmine-html-reporter@2.1.0(jasmine-core@5.13.0)(karma-jasmine@5.1.0(karma@6.4.4))(karma@6.4.4):
+  karma-jasmine-html-reporter@2.2.0(jasmine-core@5.13.0)(karma-jasmine@5.1.0(karma@6.4.4))(karma@6.4.4):
     dependencies:
       jasmine-core: 5.13.0
       karma: 6.4.4
