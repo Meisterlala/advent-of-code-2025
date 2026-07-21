@@ -29,7 +29,7 @@ rayon = "1.11.0"
 petgraph = { version = "0.8.3", features = ["rayon"] }
 
 # For input downloading in non-WASM contexts
-reqwest = { version = "0.12", features = ["blocking"] }
+reqwest = { version = "0.13", features = ["blocking"] }
 dotenv = "0.15.0"
 
 # Linea programming solver
