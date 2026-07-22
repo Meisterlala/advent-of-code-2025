@@ -50,7 +50,7 @@
     "@angular/build": "21.0.4",
     "@angular/cli": "21.0.4",
     "@angular/compiler-cli": "21.0.6",
-    "@types/jasmine": "~5.1.13",
+    "@types/jasmine": "~6.0.0",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^9.2.1",
     "jasmine-core": "~5.13.0",
