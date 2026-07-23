@@ -29,7 +29,7 @@ rayon = "1.11.0"
 petgraph = { version = "0.8.3", features = ["rayon"] }
 
 # For input downloading in non-WASM contexts
-reqwest = { version = "0.13", features = ["blocking"] }
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "native-tls"] }
 dotenv = "0.15.0"
 
 # Linea programming solver
@@ -71,4 +71,3 @@ opt-level = 3
 [lints.clippy]
 perf = "warn"
 style = "warn"
-
