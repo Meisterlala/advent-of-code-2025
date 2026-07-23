@@ -28,7 +28,7 @@
               },
               {
                 "glob": "**/*.wasm",
-                "input": "../rust-wasm/pkg",
+                "input": "node_modules/advent-of-code-2025",
                 "output": ""
               }
             ],
