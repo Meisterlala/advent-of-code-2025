@@ -37,7 +37,7 @@ good_lp = { version = "1.14.1", features = ["microlp"], default-features = false
 
 # Optional Z3 solver
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-z3 = { version = "0.19.6", features = ["bundled"] , optional = true }
+z3 = { version = "0.21.0", features = ["bundled"] , optional = true }
 
 # Criterion for benchmarking, disable Rayon in WASM builds
 [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
